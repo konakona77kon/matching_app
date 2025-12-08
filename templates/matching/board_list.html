@@ -1,0 +1,213 @@
+{% extends "matching/base.html" %}
+
+{% block title %}掲示板 | melo-match{% endblock %}
+
+{# ★ このページ専用のCSS（文字高さそろえ用） #}
+{% block extra_css %}
+<style>
+  .filter-row {
+    margin-bottom: 10px;
+    font-size: 13px;
+  }
+
+  .filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .filter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #777;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .filter-label input {
+    margin: 0;
+    position: relative;
+    top: 0.5px;   /* チェック/ラジオと文字の縦位置をそろえる微調整 */
+  }
+
+  .filter-gender-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #777;
+  }
+
+  .filter-gender-group-title {
+    margin-right: 2px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-section">
+  <div class="page-title-row">
+    <h1 class="page-title">掲示板</h1>
+    <a href="{% url 'board_create' %}" class="btn-primary">
+      ＋ 投稿する
+    </a>
+  </div>
+
+  {# === 絞り込みフォーム ============================= #}
+  <div class="filter-row">
+    <form method="get" class="filter-form">
+
+      <!-- 通話募集だけ -->
+      <label class="filter-label">
+        <input type="checkbox" name="call_only" value="1"
+               {% if call_only == '1' %}checked{% endif %}>
+        通話相手募集の投稿だけ表示
+      </label>
+
+      <!-- 性別フィルタ（ラジオ） -->
+      <div class="filter-gender-group">
+        <span class="filter-gender-group-title">性別:</span>
+
+        <label class="filter-label">
+          <input type="radio" name="gender" value=""
+                 {% if not gender %}checked{% endif %}>
+          全員
+        </label>
+
+        <label class="filter-label">
+          <input type="radio" name="gender" value="F"
+                 {% if gender == 'F' %}checked{% endif %}>
+          女性のみ
+        </label>
+
+        <label class="filter-label">
+          <input type="radio" name="gender" value="M"
+                 {% if gender == 'M' %}checked{% endif %}>
+          男性のみ
+        </label>
+      </div>
+
+      <button type="submit" class="btn-ghost btn-sm">
+        絞り込む
+      </button>
+    </form>
+  </div>
+
+ {# ★DEBUG: 現在の絞り込み状態と件数 #}
+  <p style="font-size:11px; color:#999; margin-top:-4px; margin-bottom:8px;">
+    現在の条件：
+    通話募集 = {{ call_only|default:"(なし)" }},
+    性別 = {{ gender|default:"(全員)" }},
+    件数 = {{ page_obj.paginator.count }}
+  </p>
+
+  {# =============================================== #}
+
+  {% if page_obj.object_list %}
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      {% for post in page_obj.object_list %}
+        <a href="{% url 'board_detail' post.pk %}"
+           class="card"
+           style="display:flex; gap:12px; text-decoration:none; color:inherit; align-items:flex-start;">
+
+          {# ▼ 投稿者アイコン部分 ----------------- #}
+          <div style="
+              width:52px;
+              flex-shrink:0;
+              display:flex;
+              flex-direction:column;
+              align-items:center;
+              gap:4px;
+          ">
+            {% if post.author.avatar %}
+              <img src="{{ post.author.avatar.url }}"
+                   alt="{{ post.author.nickname }} さん"
+                   style="width:44px;height:44px;border-radius:50%;object-fit:cover;">
+            {% else %}
+              <div style="
+                  width:44px;height:44px;border-radius:50%;
+                  background:#ffe4ef;color:#ff4b8a;
+                  display:flex;align-items:center;justify-content:center;
+                  font-weight:bold;
+              ">
+                {{ post.author.nickname|first|default:"?" }}
+              </div>
+            {% endif %}
+          </div>
+
+          {# ▼ 本文エリア ------------------------- #}
+          <div style="flex:1; display:flex; gap:8px;">
+
+            {# 投稿に画像があればサムネ表示 #}
+            {% if post.image %}
+              <div style="
+                  width:72px; height:72px;
+                  border-radius:12px;
+                  overflow:hidden;
+                  flex-shrink:0;
+              ">
+                <img src="{{ post.image.url }}" alt=""
+                     style="width:100%; height:100%; object-fit:cover;">
+              </div>
+            {% endif %}
+
+            <div style="flex:1;">
+              <div style="font-size:14px; font-weight:600; margin-bottom:2px;">
+                {{ post.title }}
+                {% if post.is_call_invite %}
+                  <span class="pill">通話募集</span>
+                {% endif %}
+              </div>
+
+              <div style="font-size:12px; color:#777; margin-bottom:4px;">
+                {{ post.author.nickname }}
+                {% if post.author.age_range %} / {{ post.author.age_range }}歳{% endif %}
+                {% if post.author.prefecture %} / {{ post.author.prefecture }}{% endif %}
+              </div>
+
+              <div style="font-size:12px; color:#555; max-height:2.8em; overflow:hidden;">
+                {{ post.body|default:"（本文なし）" }}
+              </div>
+
+              <div style="font-size:11px; color:#aaa; margin-top:4px;">
+                {{ post.created_at|date:"Y/m/d H:i" }}
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+
+    {# ページネーション #}
+    {% if page_obj.has_other_pages %}
+      <div style="margin-top:12px; text-align:center; font-size:13px;">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}
+                    {% if call_only == '1' %}&call_only=1{% endif %}
+                    {% if gender %}&gender={{ gender }}{% endif %}">
+            前へ
+          </a>
+        {% endif %}
+        <span style="margin:0 8px;">
+          {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+        </span>
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}
+                    {% if call_only == '1' %}&call_only=1{% endif %}
+                    {% if gender %}&gender={{ gender }}{% endif %}">
+            次へ
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  {% else %}
+    <p class="muted">
+      まだ投稿がありません。最初の投稿をしてみましょう。
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

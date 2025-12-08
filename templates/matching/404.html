@@ -1,0 +1,15 @@
+{% extends "matching/base.html" %}
+
+{% block title %}ページが見つかりません | melo-match{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:480px; margin:40px auto; text-align:center;">
+  <h2 class="page-title">ページが見つかりません</h2>
+  <p class="page-subtitle">
+    指定されたページは削除されたか、URLが間違っている可能性があります。
+  </p>
+  <a href="{% url 'profile_list' %}" class="btn-primary" style="margin-top:16px;">
+    プロフィール一覧へ戻る
+  </a>
+</div>
+{% endblock %}

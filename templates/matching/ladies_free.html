@@ -1,0 +1,303 @@
+{% extends "matching/base.html" %}
+{% block title %}女性は完全無料 | Match Lite{% endblock %}
+
+{% block extra_css %}
+<style>
+  .ladies-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px 16px 40px;
+  }
+
+  .ladies-hero {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 20px 18px;
+    box-shadow: 0 6px 18px rgba(255, 150, 170, 0.15);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .ladies-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #ffe4ef;
+    color: #ff4b8a;
+    margin-bottom: 6px;
+  }
+
+  .ladies-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ff6f9b;
+    margin: 4px 0 6px;
+  }
+
+  .ladies-subtitle {
+    font-size: 13px;
+    color: #777;
+    line-height: 1.7;
+  }
+
+  .ladies-highlight {
+    font-weight: 700;
+    color: #ff4b8a;
+  }
+
+  /* メリットカード */
+  .ladies-benefits {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 18px 0;
+  }
+
+  .ladies-benefit-card {
+    background: #fff7fb;
+    border-radius: 16px;
+    padding: 12px 10px 14px;
+    text-align: left;
+    font-size: 12px;
+  }
+
+  .ladies-benefit-icon {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .ladies-benefit-title {
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+
+  .ladies-benefit-text {
+    color: #666;
+    line-height: 1.6;
+  }
+
+  /* 流れ */
+  .ladies-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 18px 0 8px;
+  }
+
+  .ladies-steps {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px 14px 18px;
+    box-shadow: 0 4px 14px rgba(255, 150, 170, 0.12);
+    font-size: 13px;
+  }
+
+  .ladies-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+  }
+
+  .ladies-step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    background: #ff8fb1;
+    color: #fff;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .ladies-step-main-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .ladies-step-text {
+    color: #666;
+    line-height: 1.6;
+  }
+
+  /* FAQ */
+  .ladies-faq {
+    margin-top: 22px;
+    font-size: 13px;
+  }
+
+  .ladies-faq-item {
+    margin-bottom: 12px;
+  }
+
+  .ladies-faq-q {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+  }
+
+  .ladies-faq-a {
+    color: #666;
+    line-height: 1.7;
+  }
+
+  .ladies-note {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #999;
+    line-height: 1.6;
+  }
+
+  .ladies-cta-box {
+    margin-top: 18px;
+    text-align: center;
+  }
+
+  .ladies-cta {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #ff8fb1, #ff6f9b);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(255, 120, 170, 0.4);
+  }
+
+  .ladies-cta:hover {
+    filter: brightness(1.03);
+  }
+
+  /* スマホ調整 */
+  @media (max-width: 768px) {
+    .ladies-hero {
+      padding: 16px 12px;
+    }
+    .ladies-title {
+      font-size: 20px;
+    }
+    .ladies-benefits {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ladies-wrapper">
+
+  <section class="ladies-hero">
+    <div class="ladies-label">
+      💗 女性ユーザー限定
+      <span>ずっと無料</span>
+    </div>
+    <h1 class="ladies-title">女性はすべての機能が無料で使えます</h1>
+    <p class="ladies-subtitle">
+      Match Liteでは、<span class="ladies-highlight">女性の方は月額料金なし</span>で<br>
+      メッセージ・掲示板・通話募集などの機能をお使いいただけます。<br>
+      「まずは気軽に使ってみたい」という方も、安心して始められます。
+    </p>
+
+    <div class="ladies-benefits">
+      <div class="ladies-benefit-card">
+        <div class="ladies-benefit-icon">💬</div>
+        <div class="ladies-benefit-title">メッセージも無制限</div>
+        <div class="ladies-benefit-text">
+          気になった相手とは、回数を気にせずメッセージのやりとりができます。
+        </div>
+      </div>
+      <div class="ladies-benefit-card">
+        <div class="ladies-benefit-icon">📞</div>
+        <div class="ladies-benefit-title">通話募集も参加し放題</div>
+        <div class="ladies-benefit-text">
+          掲示板の通話募集への参加や、自分からの募集も無料で利用できます。
+        </div>
+      </div>
+      <div class="ladies-benefit-card">
+        <div class="ladies-benefit-icon">🆓</div>
+        <div class="ladies-benefit-title">月額料金はずっと0円</div>
+        <div class="ladies-benefit-text">
+          月額課金やポイント制はありません。いつやめてもOKな、シンプルな無料プランです。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="ladies-section-title">ご利用の流れ（女性の方）</h2>
+    <div class="ladies-steps">
+      <div class="ladies-step-item">
+        <div class="ladies-step-number">1</div>
+        <div>
+          <div class="ladies-step-main-title">無料会員登録</div>
+          <div class="ladies-step-text">
+            メールアドレスとパスワード、ニックネームなど簡単な情報だけで登録できます。
+          </div>
+        </div>
+      </div>
+      <div class="ladies-step-item">
+        <div class="ladies-step-number">2</div>
+        <div>
+          <div class="ladies-step-main-title">プロフィールを設定</div>
+          <div class="ladies-step-text">
+            自己紹介やお住まいの地域、写真などを登録すると、マッチングしやすくなります。
+          </div>
+        </div>
+      </div>
+      <div class="ladies-step-item">
+        <div class="ladies-step-number">3</div>
+        <div>
+          <div class="ladies-step-main-title">気になる相手とマッチング</div>
+          <div class="ladies-step-text">
+            いいねを送ったり、掲示板で通話募集からつながったりして、気の合う相手を見つけてください。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ladies-cta-box">
+      <a href="{% url 'signup' %}" class="ladies-cta">
+        無料ではじめる（女性）
+      </a>
+    </div>
+  </section>
+
+  <section class="ladies-faq">
+    <h2 class="ladies-section-title">よくあるご質問</h2>
+
+    <div class="ladies-faq-item">
+      <div class="ladies-faq-q">Q. 本当に無料ですか？あとから料金がかかったりしませんか？</div>
+      <div class="ladies-faq-a">
+        A. 女性の方は、月額料金やポイント課金なしでご利用いただけます。<br>
+        有料プランは男性向けのオプションとして用意しており、女性が勝手に課金されることはありません。
+      </div>
+    </div>
+
+    <div class="ladies-faq-item">
+      <div class="ladies-faq-q">Q. 無料プランだから機能が制限されたりしますか？</div>
+      <div class="ladies-faq-a">
+        A. メッセージやいいね、掲示板や通話募集など、出会いに必要な基本機能はすべてお使いいただけます。
+      </div>
+    </div>
+
+    <div class="ladies-faq-item">
+      <div class="ladies-faq-q">Q. 途中でやめたくなった場合はどうなりますか？</div>
+      <div class="ladies-faq-a">
+        A. マイページからいつでも退会が可能です。月額料金もかからないため、「ちょっと覗いてみる」くらいの気持ちでも大丈夫です。
+      </div>
+    </div>
+
+    <p class="ladies-note">
+      ※ 女性無料の対象・内容は、今後のアップデートにより変更になる場合があります。<br>
+      最新の情報はこのページにてお知らせいたします。
+    </p>
+  </section>
+
+</div>
+{% endblock %}

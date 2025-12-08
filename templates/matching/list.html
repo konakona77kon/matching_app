@@ -1,0 +1,471 @@
+{% extends "matching/base.html" %}
+
+{% block title %}プロフィール一覧 | Match Lite{% endblock %}
+
+{% block extra_css %}
+<style>
+  .profile-list-card {
+      max-width: 960px;
+      margin: 16px auto;
+  }
+
+  .profile-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+  }
+
+  .header-left-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  }
+
+  .header-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+  }
+
+  .self-link,
+  .match-link,
+  .chat-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+      white-space: nowrap;
+  }
+
+  .self-link {
+      color: #4a148c;
+      background: #f3e5f5;
+  }
+
+  .chat-link {
+      color: #0d47a1;
+      background: #e3f2fd;
+  }
+
+  .match-link {
+      color: #b71c1c;
+      background: #ffebee;
+  }
+  .match-link:hover {
+      background: #ffcdd2;
+  }
+
+  /* ▼ フィルタ ------------------------------ */
+  .profile-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+  }
+
+  .filter-label {
+      font-size: 12px;
+      color: #777;
+  }
+
+  .filter-select,
+  .filter-input {
+      font-size: 12px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      border: 1px solid #e0c4d3;
+      background: #fff;
+  }
+
+  .filter-checkbox-label {
+      font-size: 12px;
+      color: #555;
+  }
+
+  .filter-submit {
+      font-size: 12px;
+      padding: 5px 10px;
+  }
+
+  .age-filter-pills {
+      display: inline-flex;
+      gap: 6px;
+      background: #f7e9f3;
+      border-radius: 999px;
+      padding: 3px;
+  }
+
+  .age-pill {
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #b14574;
+      white-space: nowrap;
+  }
+
+  .age-pill.is-active {
+      background: #fff;
+      color: #e91e63;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+
+  /* ▼ 並び替えタブ ------------------------------ */
+  .profile-sort-tabs {
+      display: inline-flex;
+      background: #f7e9f3;
+      border-radius: 999px;
+      padding: 3px;
+      gap: 4px;
+      margin-top: 4px;
+  }
+
+  .sort-tab {
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      text-decoration: none;
+      color: #b14574;
+      white-space: nowrap;
+  }
+
+  .sort-tab.is-active {
+      background: #fff;
+      color: #e91e63;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+
+  /* プロフィールカードグリッド ------------------------------ */
+  .profile-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 8px;
+      justify-content: center;   /* 真ん中寄せ */
+  }
+
+  .profile-card-item {
+      width: calc(33.333% - 10px);
+      max-width: 210px;
+      min-width: 160px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.04);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;           /* クリックできそうに見せる */
+  }
+
+  .profile-thumb-link {
+      display: block;
+      position: relative;
+      background: #f3f3f3;
+      aspect-ratio: 3 / 4;
+      overflow: hidden;
+  }
+
+  .profile-thumb-link img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+
+  .profile-thumb-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: #ff6f9b;
+      background: #ffe4ef;
+  }
+
+  .profile-card-body {
+      padding: 10px 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+  }
+
+  .profile-card-name {
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      color: #222;
+  }
+
+  .profile-card-name:hover {
+      text-decoration: underline;
+  }
+
+  .profile-card-meta {
+      font-size: 12px;
+      color: #777;
+  }
+
+  .profile-card-footer {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+  }
+
+  .profile-like-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid var(--pink, #ff6f9b);
+      background: #fff;
+      color: var(--pink-strong, #ff4f8c);
+      text-decoration: none;
+      white-space: nowrap;
+  }
+
+  .profile-like-link:hover {
+      background: #ffe4ef;
+  }
+
+  .profile-id-chip {
+      font-size: 11px;
+      color: #aaa;
+  }
+
+  @media (max-width: 768px) {
+      .profile-card-item {
+          width: calc(50% - 8px);
+      }
+  }
+
+  @media (max-width: 480px) {
+      .profile-card-item {
+          width: 100%;
+      }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card profile-list-card">
+    <div class="profile-list-header">
+        <div class="header-left-block">
+            <div class="page-title">
+                登録プロフィール一覧
+                <span class="pill">テスト用ローカルDB</span>
+            </div>
+
+            {# ▼ 条件フォーム（県・性別・目的・年収・写真あり） #}
+            <form method="get" class="profile-filter-row" style="gap:8px; flex-wrap:wrap; align-items:center;">
+                <span class="filter-label">条件</span>
+
+                {# 都道府県 #}
+                <select name="pref" class="filter-select">
+                    <option value="">全ての地域</option>
+                    {% for code, label in pref_choices %}
+                      <option value="{{ code }}" {% if pref == code %}selected{% endif %}>
+                        {{ label }}
+                      </option>
+                    {% endfor %}
+                </select>
+
+                {# ★ 利用目的 #}
+                <select name="purpose" class="filter-select">
+                    <option value="">目的指定なし</option>
+                    {% for code, label in purpose_choices %}
+                      <option value="{{ code }}" {% if purpose == code %}selected{% endif %}>
+                        {{ label }}
+                      </option>
+                    {% endfor %}
+                </select>
+
+                {# 最低年収 #}
+              {# 最低年収（100万円単位のドロップダウン） #}
+                <select name="min_income" class="filter-select">
+                    <option value="">年収下限なし</option>
+                    <option value="100"  {% if min_income == '100'  %}selected{% endif %}>100万円以上</option>
+                    <option value="200"  {% if min_income == '200'  %}selected{% endif %}>200万円以上</option>
+                    <option value="300"  {% if min_income == '300'  %}selected{% endif %}>300万円以上</option>
+                    <option value="400"  {% if min_income == '400'  %}selected{% endif %}>400万円以上</option>
+                    <option value="500"  {% if min_income == '500'  %}selected{% endif %}>500万円以上</option>
+                    <option value="600"  {% if min_income == '600'  %}selected{% endif %}>600万円以上</option>
+                    <option value="700"  {% if min_income == '700'  %}selected{% endif %}>700万円以上</option>
+                    <option value="800"  {% if min_income == '800'  %}selected{% endif %}>800万円以上</option>
+                    <option value="900"  {% if min_income == '900'  %}selected{% endif %}>900万円以上</option>
+                    <option value="1000" {% if min_income == '1000' %}selected{% endif %}>1000万円以上</option>
+                    <option value="1500" {% if min_income == '1500' %}selected{% endif %}>1500万円以上</option>
+                </select>
+
+                {# 写真ありのみ #}
+                <label class="filter-checkbox-label">
+                    <input type="checkbox" name="photo_only" value="1"
+                           {% if photo_only == '1' %}checked{% endif %}>
+                    写真ありのみ
+                </label>
+
+                {# 現在の年齢フィルタ・並び順を保持 #}
+                <input type="hidden" name="age" value="{{ age_filter|default:'any' }}">
+                <input type="hidden" name="order" value="{{ current_order|default:'recommended' }}">
+
+                <button type="submit" class="btn-primary filter-submit">
+                    この条件でさがす
+                </button>
+            </form>
+
+            {# ▼ 年齢フィルタ（リンクで age を切り替え） #}
+            <div class="profile-filter-row">
+                <span class="filter-label">年齢</span>
+                <div class="age-filter-pills">
+                    <a href="?order={{ current_order|default:'recommended' }}
+                             &age=any
+                             &pref={{ pref|urlencode }}
+                             &gender={{ gender|urlencode }}
+                             &purpose={{ purpose|urlencode }}
+                             &min_income={{ min_income|urlencode }}
+                             {% if photo_only == '1' %}&photo_only=1{% endif %}"
+                       class="age-pill {% if age_filter != 'near' %}is-active{% endif %}">
+                        年齢指定なし
+                    </a>
+                    <a href="?order={{ current_order|default:'recommended' }}
+                             &age=near
+                             &pref={{ pref|urlencode }}
+                             &gender={{ gender|urlencode }}
+                             &purpose={{ purpose|urlencode }}
+                             &min_income={{ min_income|urlencode }}
+                             {% if photo_only == '1' %}&photo_only=1{% endif %}"
+                       class="age-pill {% if age_filter == 'near' %}is-active{% endif %}">
+                        年齢が近い人
+                    </a>
+                </div>
+            </div>
+
+            {# ▼ 並び替えタブ（現在のフィルタを維持） #}
+            <div class="profile-sort-tabs">
+                <a href="?order=recommended
+                         &age={{ age_filter|default:'any' }}
+                         &pref={{ pref|urlencode }}
+                         &gender={{ gender|urlencode }}
+                         &purpose={{ purpose|urlencode }}
+                         &min_income={{ min_income|urlencode }}
+                         {% if photo_only == '1' %}&photo_only=1{% endif %}"
+                   class="sort-tab {% if current_order == 'recommended' or not current_order %}is-active{% endif %}">
+                    🏠 おすすめ
+                </a>
+                <a href="?order=new
+                         &age={{ age_filter|default:'any' }}
+                         &pref={{ pref|urlencode }}
+                         &gender={{ gender|urlencode }}
+                         &purpose={{ purpose|urlencode }}
+                         &min_income={{ min_income|urlencode }}
+                         {% if photo_only == '1' %}&photo_only=1{% endif %}"
+                   class="sort-tab {% if current_order == 'new' %}is-active{% endif %}">
+                    🆕 新着
+                </a>
+                <a href="?order=random
+                         &age={{ age_filter|default:'any' }}
+                         &pref={{ pref|urlencode }}
+                         &gender={{ gender|urlencode }}
+                         &purpose={{ purpose|urlencode }}
+                         &min_income={{ min_income|urlencode }}
+                         {% if photo_only == '1' %}&photo_only=1{% endif %}"
+                   class="sort-tab {% if current_order == 'random' %}is-active{% endif %}">
+                    🎲 ランダム
+                </a>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <a href="{% url 'match_list' %}" class="match-link">
+                💞 マッチ一覧
+            </a>
+        </div>
+    </div>
+
+    {% if profiles %}
+        <div class="profile-grid">
+            {% for p in profiles %}
+                <div class="profile-card-item"
+                     data-detail-url="{% url 'profile_detail' p.pk %}">
+                    <a href="{% url 'profile_detail' p.pk %}" class="profile-thumb-link">
+                        {% if p.avatar %}
+                            <img src="{{ p.avatar.url }}" alt="{{ p.nickname }} さんの写真">
+                        {% else %}
+                            <div class="profile-thumb-placeholder">
+                                {{ p.nickname|first|default:"?" }}
+                            </div>
+                        {% endif %}
+                    </a>
+
+                    <div class="profile-card-body">
+                        <a href="{% url 'profile_detail' p.pk %}" class="profile-card-name">
+                            {{ p.nickname|default:"ニックネーム未設定" }}
+                        </a>
+
+                        <div class="profile-card-meta">
+                            {% if p.age_range %}
+                                {{ p.age_range }}
+                            {% else %}
+                                年齢未設定
+                            {% endif %}
+                            ・
+                            {{ p.prefecture|default:"居住地未設定" }}
+                        </div>
+
+    <div class="profile-subinfo-row">
+    利用目的:
+    {% if p.purpose %}
+        {{ p.get_purpose_display }}
+    {% else %}
+        未設定
+    {% endif %}
+</div>
+                      
+
+                        <div class="profile-card-footer">
+                            <a href="{% url 'send_like' p.pk %}" class="profile-like-link">
+                                👍 いいね
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="muted">まだプロフィールがありません。最初の1件を登録してみましょう。</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll(".profile-card-item[data-detail-url]").forEach(function(card) {
+    card.addEventListener("click", function (e) {
+      // カード内の a（リンク）やボタンをクリックしたときはそっちを優先
+      if (e.target.closest("a") || e.target.closest("button")) {
+        return;
+      }
+      const url = card.dataset.detailUrl;
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

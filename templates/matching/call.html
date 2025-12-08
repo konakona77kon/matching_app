@@ -1,0 +1,587 @@
+{% extends "matching/base.html" %}
+
+{% block title %}通話ルーム | melo-match{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* ページ全体をほぼフルスクリーンっぽく使う */
+  .call-page {
+      max-width: 100%;
+      margin: 0;
+      padding: 0;
+  }
+
+  .call-card {
+      border-radius: 0;
+      box-shadow: none;
+      padding: 0;
+  }
+
+  /* 画面全体を使うエリア（ここは「背景」担当） */
+  .fullscreen-call {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 140px);  /* ヘッダー＋ボタンぶん少し引く */
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+  }
+
+  /* 中央の「スマホ画面」枠 */
+  .call-video-frame {
+      position: relative;
+      width: min(100%, 420px);   /* PC では 420px くらいを上限に縦長 */
+      aspect-ratio: 9 / 16;      /* スマホ縦画面の比率 */
+      background: #000;
+      overflow: hidden;
+  }
+
+  /* 相手の映像：スマホ枠いっぱいに表示 */
+  #remoteVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+
+  /* 相手がいないときのテキスト（スマホ枠の中央に） */
+  #remoteFallback {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #ccc;
+      font-size: 13px;
+      background: rgba(0,0,0,0.4);
+      padding: 6px 10px;
+      border-radius: 999px;
+  }
+
+  /* 自分の映像を右下に小さく重ねる（スマホ枠の中に配置） */
+  .self-video-wrapper {
+      position: absolute;
+      right: 8px;
+      bottom: 8px;
+      width: 30%;
+      max-width: 120px;
+      aspect-ratio: 9 / 16;
+      background: #000;
+      border-radius: 12px;
+      border: 2px solid rgba(255,255,255,0.8);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+
+  #localVideo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+  }
+
+  #localFallback {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ddd;
+      font-size: 11px;
+      padding: 4px;
+      text-align: center;
+      background: rgba(0,0,0,0.35);
+  }
+
+  /* 下のステータス＆ボタンエリア */
+  .call-bottom-panel {
+      padding: 10px 14px 16px;
+      background: #111;
+      color: #eee;
+  }
+
+  .call-title {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 4px;
+      color: #ffb2d0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+  }
+
+  .call-title::before {
+      content: "📞";
+  }
+
+  .call-subtitle {
+      font-size: 11px;
+      color: #aaa;
+      margin-bottom: 6px;
+  }
+
+  .video-status {
+      font-size: 11px;
+      color: #ccc;
+      margin-bottom: 8px;
+  }
+
+  .call-buttons-main,
+  .call-buttons-toggle {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 6px;
+  }
+
+  .btn-primary,
+  .btn-ghost,
+  .btn-danger {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      text-align: center;
+      min-width: 110px;
+      white-space: nowrap;
+  }
+
+  .btn-primary {
+      background: var(--pink);
+      color: #fff;
+  }
+  .btn-primary:hover {
+      background: var(--pink-strong);
+  }
+
+  .btn-ghost {
+      border: 1px solid var(--pink);
+      color: var(--pink-strong);
+      background: #fff;
+  }
+  .btn-ghost:hover {
+      background: var(--pink-light);
+  }
+
+  .btn-danger {
+      background: #ff6f6f;
+      color: #fff;
+  }
+  .btn-danger:hover {
+      background: #ff4a4a;
+  }
+
+  @media (max-width: 768px) {
+      .fullscreen-call {
+          height: calc(100vh - 130px);
+      }
+      .self-video-wrapper {
+          right: 6px;
+          bottom: 6px;
+          max-width: 110px;
+      }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="call-page">
+  <div class="call-card">
+
+    <!-- 相手：スマホ縦長フレーム、自分：右下小窓 -->
+    <div class="fullscreen-call">
+      <div class="call-video-frame">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <span id="remoteFallback">まだ相手が接続していません。</span>
+
+        <div class="self-video-wrapper">
+          <video id="localVideo" autoplay playsinline muted></video>
+          <span id="localFallback">カメラ / マイク未接続</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 画面下のコントロールエリア -->
+    <div class="call-bottom-panel">
+      <div class="call-title">
+        通話ルーム
+      </div>
+      <div class="call-subtitle">
+        相手と通話したいブラウザから、このページを開いてください。
+      </div>
+
+      <div id="localStatus" class="video-status">
+        マイク・カメラはまだOFFです。
+      </div>
+
+      <div class="call-buttons-main">
+        <button id="btnStartAudio" class="btn-primary">🔈 音声通話開始</button>
+        <button id="btnStartVideo" class="btn-primary">🎥 ビデオ通話開始</button>
+        <button id="btnHangup" class="btn-danger">📴 切断</button>
+        <a href="{% url 'chat_room' room_id=room.id %}" class="btn-ghost">💬 チャットに戻る</a>
+      </div>
+
+      <div class="call-buttons-toggle">
+        <button id="btnToggleMic" class="btn-ghost">🎙 マイク OFF</button>
+        <button id="btnToggleCam" class="btn-ghost">📷 カメラ OFF</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // ★ JS 部分はそのまま（ID も変えていないのでコピペでOK）
+  let localStream = null;
+  let pc = null;
+  let socket = null;
+
+  let micEnabled = true;
+  let camEnabled = true;
+
+  document.addEventListener("DOMContentLoaded", () => {
+      const localVideo    = document.getElementById("localVideo");
+      const remoteVideo   = document.getElementById("remoteVideo");
+      const localStatus   = document.getElementById("localStatus");
+      const localFallback = document.getElementById("localFallback");
+      const remoteFallback = document.getElementById("remoteFallback");
+
+      const btnStartAudio = document.getElementById("btnStartAudio");
+      const btnStartVideo = document.getElementById("btnStartVideo");
+      const btnHangup     = document.getElementById("btnHangup");
+      const btnToggleMic  = document.getElementById("btnToggleMic");
+      const btnToggleCam  = document.getElementById("btnToggleCam");
+
+      const roomId = "{{ room.id }}";
+
+      const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+      const wsUrl = `${wsScheme}://${window.location.host}/ws/call/${roomId}/`;
+      console.log("Connecting WebSocket:", wsUrl);
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+          console.log("WebSocket connected");
+      };
+
+      socket.onmessage = async (event) => {
+          const msg = JSON.parse(event.data);
+          console.log("WebSocket message:", msg);
+
+          const type = msg.event;
+          const data = msg.data;
+
+          if (type === "offer") {
+              await handleOffer(data);
+          } else if (type === "answer") {
+              await handleAnswer(data);
+          } else if (type === "candidate") {
+              await handleCandidate(data);
+          } else if (type === "leave") {
+              handleRemoteLeave();
+          }
+      };
+
+      socket.onclose = () => {
+          console.log("WebSocket closed");
+      };
+
+      socket.onerror = (err) => {
+          console.error("WebSocket error:", err);
+      };
+
+      function ensurePeerConnection() {
+          if (pc) return;
+
+          const config = {
+              iceServers: [
+                  { urls: "stun:stun.l.google.com:19302" },
+              ],
+          };
+
+          pc = new RTCPeerConnection(config);
+
+          pc.onicecandidate = (event) => {
+              if (event.candidate && socket && socket.readyState === WebSocket.OPEN) {
+                  socket.send(JSON.stringify({
+                      event: "candidate",
+                      data: event.candidate
+                  }));
+              }
+          };
+
+          pc.ontrack = (event) => {
+              console.log("ontrack:", event);
+              const [remoteStream] = event.streams;
+              remoteVideo.srcObject = remoteStream;
+              if (remoteFallback) {
+                  remoteFallback.style.display = "none";
+              }
+          };
+
+          pc.onconnectionstatechange = () => {
+              console.log("PC state:", pc.connectionState);
+          };
+      }
+
+      async function startLocalMedia(kind) {
+          try {
+              if (localStream) {
+                  localStream.getTracks().forEach(t => t.stop());
+                  localStream = null;
+              }
+
+              const constraints = (kind === "video")
+                  ? { audio: true, video: true }
+                  : { audio: true, video: false };
+
+              localStream = await navigator.mediaDevices.getUserMedia(constraints);
+
+              micEnabled = true;
+              camEnabled = constraints.video;
+
+              if (constraints.video) {
+                  localVideo.srcObject = localStream;
+                  localVideo.style.display = "block";
+                  if (localFallback) localFallback.style.display = "none";
+                  localStatus.textContent = "カメラ・マイク ON";
+              } else {
+                  localVideo.srcObject = null;
+                  if (localFallback) {
+                      localFallback.style.display = "block";
+                      localFallback.textContent = "音声通話中（映像なし）";
+                  }
+                  localStatus.textContent = "マイク ON（映像なし）";
+              }
+              updateToggleButtons();
+
+              ensurePeerConnection();
+              localStream.getTracks().forEach((track) => {
+                  pc.addTrack(track, localStream);
+              });
+
+          } catch (err) {
+              console.error("getUserMedia error:", err);
+              alert("カメラ / マイクへのアクセスに失敗しました: " + err.message);
+              localStatus.textContent = "マイク・カメラの許可が得られませんでした。";
+          }
+      }
+
+      async function startCall(kind) {
+          await startLocalMedia(kind);
+          ensurePeerConnection();
+
+          if (!pc) return;
+          if (!socket || socket.readyState !== WebSocket.OPEN) {
+              alert("シグナリング用 WebSocket に接続できていません。");
+              return;
+          }
+
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+
+          socket.send(JSON.stringify({
+              event: "offer",
+              data: {
+                  sdp: offer.sdp,
+                  type: offer.type,
+                  mode: kind
+              }
+          }));
+      }
+
+      async function handleOffer(data) {
+          console.log("handleOffer", data);
+
+          ensurePeerConnection();
+
+          if (!localStream) {
+              const mode = data.mode || "video";
+              await startLocalMedia(mode);
+          }
+
+          const offer = new RTCSessionDescription({
+              type: data.type,
+              sdp: data.sdp
+          });
+
+          await pc.setRemoteDescription(offer);
+
+          const answer = await pc.createAnswer();
+          await pc.setLocalDescription(answer);
+
+          socket.send(JSON.stringify({
+              event: "answer",
+              data: {
+                  sdp: answer.sdp,
+                  type: answer.type
+              }
+          }));
+      }
+
+      async function handleAnswer(data) {
+          console.log("handleAnswer", data);
+          if (!pc) return;
+
+          const answer = new RTCSessionDescription({
+              type: data.type,
+              sdp: data.sdp
+          });
+
+          await pc.setRemoteDescription(answer);
+      }
+
+      async function handleCandidate(candidate) {
+          console.log("handleCandidate", candidate);
+          if (!pc) return;
+          try {
+              await pc.addIceCandidate(new RTCIceCandidate(candidate));
+          } catch (err) {
+              console.error("addIceCandidate error:", err);
+          }
+      }
+
+      function updateToggleButtons() {
+          if (btnToggleMic) {
+              btnToggleMic.textContent = micEnabled ? "🎙 マイク OFF" : "🎙 マイク ON";
+          }
+          if (btnToggleCam) {
+              btnToggleCam.textContent = camEnabled ? "📷 カメラ OFF" : "📷 カメラ ON";
+          }
+
+          if (!micEnabled && !camEnabled) {
+              localStatus.textContent = "マイク・カメラともに OFF です。";
+          } else if (!micEnabled && camEnabled) {
+              localStatus.textContent = "カメラだけ ON（マイクはミュート）。";
+          } else if (micEnabled && !camEnabled) {
+              localStatus.textContent = "マイクだけ ON（映像なし）。";
+          } else {
+              localStatus.textContent = "カメラ・マイク ON。";
+          }
+      }
+
+      function toggleMic() {
+          if (!localStream) return;
+          const audioTracks = localStream.getAudioTracks();
+          if (!audioTracks.length) return;
+
+          micEnabled = !micEnabled;
+          audioTracks.forEach(track => track.enabled = micEnabled);
+          updateToggleButtons();
+      }
+
+      function toggleCam() {
+          if (!localStream) return;
+          const videoTracks = localStream.getVideoTracks();
+          if (!videoTracks.length) return;
+
+          camEnabled = !camEnabled;
+          videoTracks.forEach(track => track.enabled = camEnabled);
+
+          if (!camEnabled) {
+              localVideo.style.display = "none";
+              if (localFallback) {
+                  localFallback.style.display = "block";
+                  localFallback.textContent = "カメラ OFF 中";
+              }
+          } else {
+              localVideo.style.display = "block";
+              if (localFallback) {
+                  localFallback.style.display = "none";
+              }
+          }
+          updateToggleButtons();
+      }
+
+      function hangup() {
+          if (localStream) {
+              localStream.getTracks().forEach(t => t.stop());
+              localStream = null;
+          }
+          if (pc) {
+              pc.close();
+              pc = null;
+          }
+          if (localFallback) {
+              localFallback.textContent = "カメラ / マイク未接続";
+              localFallback.style.display = "block";
+          }
+          if (localVideo) {
+              localVideo.srcObject = null;
+          }
+          localStatus.textContent = "通話は終了しました。";
+          micEnabled = false;
+          camEnabled = false;
+          updateToggleButtons();
+
+          if (socket && socket.readyState === WebSocket.OPEN) {
+              socket.send(JSON.stringify({ event: "leave", data: null }));
+          }
+      }
+
+      function handleRemoteLeave() {
+          if (remoteVideo) {
+              remoteVideo.srcObject = null;
+          }
+          if (remoteFallback) {
+              remoteFallback.style.display = "block";
+              remoteFallback.textContent = "相手が通話を終了しました。";
+          }
+      }
+
+      if (btnStartAudio) {
+          btnStartAudio.addEventListener("click", (e) => {
+              e.preventDefault();
+              startCall("audio");
+          });
+      }
+
+      if (btnStartVideo) {
+          btnStartVideo.addEventListener("click", (e) => {
+              e.preventDefault();
+              startCall("video");
+          });
+      }
+
+      if (btnHangup) {
+          btnHangup.addEventListener("click", (e) => {
+              e.preventDefault();
+              hangup();
+          });
+      }
+
+      if (btnToggleMic) {
+          btnToggleMic.addEventListener("click", (e) => {
+              e.preventDefault();
+              toggleMic();
+          });
+      }
+
+      if (btnToggleCam) {
+          btnToggleCam.addEventListener("click", (e) => {
+              e.preventDefault();
+              toggleCam();
+          });
+      }
+
+      const params = new URLSearchParams(window.location.search);
+      const initialMode = params.get("mode");
+      if (initialMode === "audio") {
+          startCall("audio");
+      } else if (initialMode === "video") {
+          startCall("video");
+      } else {
+          micEnabled = true;
+          camEnabled = false;
+          updateToggleButtons();
+      }
+  });
+</script>
+{% endblock %}

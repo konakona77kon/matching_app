@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Lite - ホーム</title>
+    <style>
+        body { 
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 80px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 22px;
+            background: #ff4f7d;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            margin: 10px;
+        }
+        .btn.outline {
+            background: white;
+            color: #ff4f7d;
+            border: 2px solid #ff4f7d;
+        }
+
+        /* ▼ 規約リンク表示ゾーン */
+        .terms-note {
+            margin-top: 40px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .terms-note a {
+            color: #ff4f7d;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Match Lite</h1>
+<p>小さくてやさしいマッチングアプリ</p>
+
+<div class="hero-sub">
+  <span class="pink-pill">女性無料</span>
+  かんたん登録で今すぐ始められます
+  <a href="/ladies_free" class="btn-primary">詳しく見る</a>
+</div>
+
+<a class="btn" href="{% url 'signup' %}">新規登録</a>
+<a class="btn outline" href="{% url 'login' %}">ログイン</a>
+
+<!-- ▼ ここ追加するだけでOK！ -->
+<div class="terms-note">
+    ご利用前に必ず  
+    <a href="{% url 'terms' %}">利用規約</a> ・ 
+    <a href="{% url 'privacy' %}">プライバシーポリシー</a> ・ 
+    <a href="{% url 'rules' %}">禁止事項</a>  
+    をお読みください。
+</div>
+
+</body>
+</html>

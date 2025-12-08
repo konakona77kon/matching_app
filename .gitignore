@@ -1,0 +1,16 @@
+# Python / Django
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# 仮想環境
+venv/
+
+# Django
+db.sqlite3
+staticfiles/
+media/
+
+# VSCode
+.vscode/

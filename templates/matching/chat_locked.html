@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>チャットはまだ開けません</title>
+</head>
+<body>
+  <h2>まだ両思いじゃありません</h2>
+  <p>{{ target.nickname }} さんからも いいね が来ると、チャットできるようになります。</p>
+
+  <p><a href="{% url 'profile_detail' target.id %}">← {{ target.nickname }} さんのプロフィールに戻る</a></p>
+  <p><a href="/profile/list/">一覧へ戻る</a></p>
+</body>
+</html>

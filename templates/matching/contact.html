@@ -1,0 +1,80 @@
+{% extends "matching/base.html" %}
+
+{% block title %}お問い合わせ | Match Lite{% endblock %}
+
+{% block content %}
+<div class="page-section">
+  <div class="card" style="max-width:640px; margin:0 auto;">
+    <h1 class="page-title">お問い合わせ</h1>
+    <p class="page-subtitle">
+      アプリに関する質問・不具合のご報告・ご要望などがありましたら、こちらからご連絡ください。
+    </p>
+
+    <form method="post" action="" style="display:flex; flex-direction:column; gap:12px;">
+      {% csrf_token %}
+
+      <div>
+        <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+          お名前（任意）
+        </label>
+        <input
+          type="text"
+          name="name"
+          class="text-input"
+          style="width:100%; padding:8px 10px; border-radius:8px;
+                 border:1px solid #e3cfe0; font-size:14px;"
+        >
+      </div>
+
+      <div>
+        <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+          メールアドレス
+        </label>
+        <input
+          type="email"
+          name="email"
+          class="text-input"
+          style="width:100%; padding:8px 10px; border-radius:8px;
+                 border:1px solid #e3cfe0; font-size:14px;"
+        >
+        <p style="font-size:11px; color:#999; margin-top:2px;">
+          ※返信を希望されない場合は空欄のままでも大丈夫です。
+        </p>
+      </div>
+
+      <div>
+        <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+          件名
+        </label>
+        <input
+          type="text"
+          name="title"
+          class="text-input"
+          style="width:100%; padding:8px 10px; border-radius:8px;
+                 border:1px solid #e3cfe0; font-size:14px;"
+          required
+        >
+      </div>
+
+      <div>
+        <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+          内容
+        </label>
+        <textarea
+          name="message"
+          rows="6"
+          style="width:100%; padding:8px 10px; border-radius:8px;
+                 border:1px solid #e3cfe0; font-size:14px; resize:vertical;"
+          required
+        ></textarea>
+      </div>
+
+      <div style="margin-top:8px;">
+        <button type="submit" class="btn-primary">
+          送信する
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

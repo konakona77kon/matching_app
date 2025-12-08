@@ -1,0 +1,19 @@
+{% extends "matching/base.html" %}
+
+{% block title %}エラーが発生しました | melo-match{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:480px; margin:40px auto; text-align:center;">
+  <h2 class="page-title">エラーが発生しました</h2>
+  <p class="page-subtitle">
+    申し訳ありません。<br>
+    処理中に問題が発生しました。
+  </p>
+  <p style="font-size:13px; color:#888; margin-top:8px;">
+    しばらく時間をおいて再度アクセスしてください。
+  </p>
+  <a href="{% url 'profile_list' %}" class="btn-primary" style="margin-top:16px;">
+    トップに戻る
+  </a>
+</div>
+{% endblock %}

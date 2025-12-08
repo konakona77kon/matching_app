@@ -1,0 +1,125 @@
+{% extends "matching/base.html" %}
+
+{% block title %}チャット一覧 | Match Lite{% endblock %}
+
+{% block extra_css %}
+<style>
+  .chat-list-card {
+      padding: 16px 16px 20px;
+  }
+
+  .chat-item-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+  }
+
+  .chat-item {
+      border-top: 1px solid #f4f4f4;
+  }
+
+  .chat-link {
+      display: block;
+      padding: 10px 8px;
+      text-decoration: none;
+      color: inherit;
+  }
+
+  .chat-link-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+  }
+
+  .chat-partner-name {
+      font-weight: 600;
+      font-size: 14px;
+  }
+
+  .badge-unread {
+      min-width: 18px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #ff4f6f;
+      color: #fff;
+      font-size: 11px;
+      text-align: center;
+  }
+
+  .chat-link-sub {
+      font-size: 12px;
+      color: #777;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+  }
+
+  .chat-link-sub span.text {
+      max-width: 70%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card chat-list-card">
+    <div class="page-title">
+        💬 チャット一覧
+    </div>
+
+    {% if room_infos %}
+        <ul class="chat-item-list">
+            {% for info in room_infos %}
+                {% with room=info.room partner=info.partner latest=info.latest_message unread=info.unread_count %}
+                <li class="chat-item">
+                    <a href="{% url 'chat_room' room_id=room.id %}" class="chat-link">
+                        <div class="chat-link-main">
+                            <div class="chat-partner-name">
+                                {{ partner.nickname }} さんとのチャット
+                            </div>
+                            {% if unread > 0 %}
+                                <span class="badge-unread">{{ unread }}</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="chat-link-sub">
+                            {% if latest %}
+                                <span class="text">
+                                    {% if latest.text %}
+                                        {{ latest.text|truncatechars:24 }}
+                                    {% else %}
+                                        (画像/動画のみ)
+                                    {% endif %}
+                                </span>
+                                <span>
+                                    {{ latest.created_at|date:"Y-m-d H:i" }}
+                                </span>
+                            {% else %}
+                                <span class="text">まだメッセージはありません</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </li>
+                {% endwith %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="muted">
+            まだチャットルームがありません。
+        </p>
+        <p class="muted">
+            プロフィール一覧から相互いいねしてチャットを始めてみましょう。
+        </p>
+    {% endif %}
+
+    <div style="margin-top:16px;">
+        <a href="{% url 'profile_list' %}" class="btn btn-ghost">
+            ← プロフィール一覧に戻る
+        </a>
+    </div>
+</div>
+{% endblock %}

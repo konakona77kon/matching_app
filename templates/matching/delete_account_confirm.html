@@ -1,0 +1,25 @@
+{% extends "matching/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width:600px; margin:40px auto; text-align:center;">
+  <h2>退会の確認</h2>
+  <p>
+    アカウントを削除すると、<br>
+    プロフィール・チャット・いいね・掲示板投稿など<br>
+    関連するデータはすべて削除されます。<br>
+    よろしいですか？
+  </p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" style="padding:10px 24px; border-radius:999px; border:none; background:#ff6699; color:white;">
+      はい、退会します
+    </button>
+  </form>
+
+  <p style="margin-top:16px;">
+    <a href="{% url 'profile_list' %}">キャンセルして戻る</a>
+  </p>
+</div>
+{% endblock %}

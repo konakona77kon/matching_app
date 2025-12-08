@@ -1,0 +1,277 @@
+{% extends "matching/base.html" %}
+
+{% block title %}{{ partner.nickname }} さんとのチャット | melo-match{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* 全体レイアウト -------------------------------------------------- */
+  .chat-room {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 16px 16px 140px;  /* 下に余白：固定入力＋フッターメニュー分 */
+      box-sizing: border-box;
+  }
+
+  .chat-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #ff4f8b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+  }
+  .chat-title::before { content: "💬"; font-size: 20px; }
+
+  .chat-subtitle { font-size: 13px; color: #888; margin-bottom: 12px; }
+  .chat-subtitle .me { font-weight: 600; color: #ff4f8b; }
+
+  /* メッセージ一覧 -------------------------------------------------- */
+  .chat-messages {
+      border-radius: 16px;
+      padding: 14px 16px;
+      min-height: 260px;
+      /* ★ここを変更：高さ固定＋内部スクロールをやめる */
+      /* max-height: calc(100vh - 260px); */
+      /* overflow-y: auto; */
+      background: #fff7fb;
+      box-shadow: inset 0 0 0 1px rgba(255, 173, 206, 0.25);
+  }
+
+  .chat-row { margin: 8px 0; display: flex; }
+  .chat-row.me { justify-content: flex-end; }
+
+  .chat-bubble {
+      max-width: 72%;
+      padding: 8px 12px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      background: #ffffff;
+      border: 1px solid #f3c2d9;
+      border-bottom-left-radius: 4px;
+      color: #444;
+  }
+  .chat-row.me .chat-bubble {
+      background: linear-gradient(135deg, #ff8bb5, #ff5f8a);
+      color: #fff;
+      border: none;
+      border-bottom-right-radius: 4px;
+  }
+
+  .chat-meta { font-size: 10px; color: #b08fa2; margin-top: 3px; }
+
+  /* 画像・動画のスタイル ---------------------------------------------- */
+  .chat-bubble img.chat-image {
+      display: block;
+      max-width: 220px;
+      max-height: 260px;
+      border-radius: 12px;
+      margin-top: 6px;
+  }
+  .chat-bubble video.chat-video {
+      display: block;
+      max-width: 220px;
+      max-height: 260px;
+      border-radius: 12px;
+      margin-top: 6px;
+  }
+
+  /* 通話ボタン＆着信通知 -------------------------------------------- */
+  .call-buttons {
+      display: flex;
+      gap: 12px;
+      margin: 8px 0 14px;
+      flex-wrap: wrap;
+  }
+  .call-buttons .btn-primary {
+      flex: 1;
+      text-align: center;
+  }
+
+  .call-notice {
+      margin-bottom:12px;
+      padding:10px 14px;
+      border-radius:12px;
+      background:#fff0f5;
+      border:1px solid #ffb6d0;
+      font-size:13px;
+  }
+  .call-notice-buttons {
+      margin-top:6px;
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+  }
+
+  /* 入力欄（固定表示） ---------------------------------------------- */
+  form.chat-input-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 70px;   /* ← フッターメニューの少し上に固定 */
+      padding: 8px 18px 10px;
+      box-sizing: border-box;
+      border-top: 1px solid #f3d1e2;
+      background: rgba(255, 255, 255, 0.96);
+      display: flex;
+      gap: 8px;
+      z-index: 20;
+  }
+
+  form.chat-input-bar input[type="text"] {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid #f2b3d2;
+      font-size: 14px;
+      outline: none;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+      background:#fff;
+  }
+  form.chat-input-bar input[type="text"]:focus {
+      border-color: #ff7fb0;
+      box-shadow: 0 0 0 2px rgba(255, 143, 191, 0.35);
+  }
+
+  /* クリップボタン */
+  .chat-attach-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid #f2b3d2;
+      background: #fff7fb;
+      cursor: pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+  }
+
+  form.chat-input-bar button[type="submit"] {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #ff8bb5, #ff5f8a);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 6px 16px rgba(255, 122, 170, 0.45);
+      white-space: nowrap;
+  }
+  form.chat-input-bar button[type="submit"]:hover {
+      opacity: 0.93;
+      transform: translateY(-1px);
+  }
+  form.chat-input-bar button[type="submit"]:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 8px rgba(255, 122, 170, 0.35);
+  }
+
+  @media (max-width: 768px) {
+      .chat-room {
+          padding: 12px 10px 130px;
+      }
+      form.chat-input-bar {
+          bottom: 64px;  /* スマホで少しだけ詰める */
+      }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-room">
+    <div class="chat-title">
+        {{ partner.nickname }} さんとのチャット
+    </div>
+
+
+    {% if incoming_call %}
+      <div class="call-notice">
+        📞
+        <strong>{{ incoming_call.caller.nickname }}</strong> さんから
+        <strong>{% if incoming_call.mode == "audio" %}音声{% else %}ビデオ{% endif %}</strong>
+        通話のリクエストが来ています。
+
+        <div class="call-notice-buttons">
+          <form method="post" action="{% url 'accept_call_request' incoming_call.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-primary">通話に出る</button>
+          </form>
+
+          <form method="post" action="{% url 'reject_call_request' incoming_call.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-ghost">あとで</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="call-buttons">
+      <form method="post" action="{% url 'send_call_request' room.id 'audio' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary">🔈 音声通話</button>
+      </form>
+
+      <form method="post" action="{% url 'send_call_request' room.id 'video' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn-primary">🎥 ビデオ通話</button>
+      </form>
+    </div>
+
+    <div class="chat-messages">
+        {% if messages %}
+            {% for m in messages %}
+                <div class="chat-row {% if m.sender.id == me.id %}me{% else %}other{% endif %}">
+                    <div>
+                        <div class="chat-bubble">
+                            {% if m.text %}
+                              {{ m.text|linebreaksbr }}
+                            {% endif %}
+{% if m.image %}
+  <img src="{{ m.image.url }}" class="chat-image">
+{% endif %}
+
+                            {% if m.video %}
+                              <video src="{{ m.video.url }}" controls class="chat-video"></video>
+                            {% endif %}
+                        </div>
+                        <div class="chat-meta">
+                            {{ m.sender.nickname }} /
+                            {{ m.created_at|date:"Y-m-d H:i" }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="font-size:13px; color:#aa8a9c; text-align:center; margin-top:40px;">
+                まだメッセージはありません。最初の一言を送ってみましょう。
+            </p>
+        {% endif %}
+    </div>
+
+</div>
+
+<form method="post" enctype="multipart/form-data" class="chat-input-bar">
+  {% csrf_token %}
+  <input type="file" id="fileInput" name="file" accept="image/*,video/*" style="display:none;">
+  <button type="button" class="chat-attach-btn"
+          onclick="document.getElementById('fileInput').click();">📎</button>
+  <input type="text" name="message" placeholder="メッセージを入力…" autocomplete="off">
+  <button type="submit">送信</button>
+</form>
+
+{% block extra_js %}
+<script>
+  window.addEventListener('load', function () {
+    const box = document.querySelector('.chat-messages');
+    if (box) {
+      box.scrollTop = box.scrollHeight;
+    }
+  });
+</script>
+{% endblock %}
+
+{% endblock %}

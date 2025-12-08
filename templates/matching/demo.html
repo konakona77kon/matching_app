@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>仮マッチングアプリ（ローカル版）</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .app {
+      background: #fff;
+      width: 360px;
+      max-width: 90vw;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      padding: 16px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .header p {
+      font-size: 12px;
+      margin: 4px 0 0;
+      color: #666;
+    }
+
+    .card {
+      border-radius: 16px;
+      overflow: hidden;
+      background: #eee;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .info {
+      padding: 10px 4px 4px;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .name {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .sub {
+      font-size: 12px;
+      color: #777;
+    }
+
+    .purpose {
+      font-size: 11px;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+    }
+
+    .purpose-love {
+      background: #ffe4ea;
+      color: #c2185b;
+    }
+
+    .purpose-friend {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .purpose-both {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .intro {
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 999px;
+      border: none;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.05s ease, box-shadow 0.05s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .btn-skip {
+      background: #fff;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+    }
+
+    .btn-like {
+      background: #ff6b81;
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(255,107,129,0.6);
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #555;
+      min-height: 16px;
+    }
+
+    .match-banner {
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 13px;
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .footer {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="header">
+      <h1>仮マッチングアプリ</h1>
+      <p>ローカルで動くテスト版（データは保存されません）</p>
+    </div>
+
+    <div id="card-container"></div>
+
+    <div class="buttons">
+      <button class="btn btn-skip" id="skip-btn">スキップ</button>
+      <button class="btn btn-like" id="like-btn">いいね</button>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div id="match-banner" class="match-banner" style="display:none;"></div>
+
+    <div class="footer">
+      これは試作版です。実際のサービスではありません。
+    </div>
+  </div>
+
+  <script>
+    // 仮の「自分」
+    const currentUserId = 1;
+
+    // ダミーユーザーデータ（後でDBに置き換えるイメージ）
+    const users = [
+      {
+        id: 1,
+        nickname: "あなた（仮）",
+        ageRange: "20-24",
+        area: "東京",
+        purpose: "both",
+        intro: "テスト用の自分のプロフィールです。",
+        photoUrl: "https://placehold.co/600x400?text=You"
+      },
+      {
+        id: 2,
+        nickname: "さくら",
+        ageRange: "20-24",
+        area: "東京",
+        purpose: "love",
+        intro: "カフェ巡りと映画が好きです。まずはメッセージから仲良くなれたらうれしいです。",
+        photoUrl: "https://placehold.co/600x400?text=Sakura"
+      },
+      {
+        id: 3,
+        nickname: "りょう",
+        ageRange: "25-29",
+        area: "神奈川",
+        purpose: "friend",
+        intro: "ゲーム・アニメ・カラオケ好き。同じ趣味の友達がほしいです。",
+        photoUrl: "https://placehold.co/600x400?text=Ryo"
+      },
+      {
+        id: 4,
+        nickname: "みなみ",
+        ageRange: "20-24",
+        area: "千葉",
+        purpose: "both",
+        intro: "ゆっくり話せる人がいいです。友達からでも、合えば恋愛も◎",
+        photoUrl: "https://placehold.co/600x400?text=Minami"
+      }
+    ];
+
+    // 「相手側から既にいいねされている」想定のダミーデータ
+    const alreadyLikedYou = new Set([2, 4]); // id 2と4はあなたに「いいね」済み、という想定
+
+    let currentIndex = 1; // 0番は自分なので、2人目から表示
+    const likedByYou = new Set();
+
+    const cardContainer = document.getElementById("card-container");
+    const statusEl = document.getElementById("status");
+    const matchBannerEl = document.getElementById("match-banner");
+    const likeBtn = document.getElementById("like-btn");
+    const skipBtn = document.getElementById("skip-btn");
+
+    function purposeLabel(purpose) {
+      switch (purpose) {
+        case "love":
+          return { text: "恋愛メイン", cls: "purpose purpose-love" };
+        case "friend":
+          return { text: "友達メイン", cls: "purpose purpose-friend" };
+        case "both":
+          return { text: "恋愛・友達どちらもOK", cls: "purpose purpose-both" };
+        default:
+          return { text: "", cls: "purpose" };
+      }
+    }
+
+    function renderCard() {
+      matchBannerEl.style.display = "none";
+      matchBannerEl.textContent = "";
+
+      if (currentIndex >= users.length) {
+        cardContainer.innerHTML = "<p>表示する相手がいません。</p>";
+        likeBtn.disabled = true;
+        skipBtn.disabled = true;
+        statusEl.textContent = "テストユーザーを増やすと、ここにまた表示されます。";
+        return;
+      }
+
+      const user = users[currentIndex];
+      const p = purposeLabel(user.purpose);
+
+      cardContainer.innerHTML = `
+        <div class="card">
+          <img src="${user.photoUrl}" alt="${user.nickname}" />
+          <div class="badge">${user.area} / ${user.ageRange}</div>
+          <div class="info">
+            <div class="name-row">
+              <div class="name">${user.nickname}</div>
+              <div class="sub">${user.ageRange}歳・${user.area}</div>
+            </div>
+            <div class="${p.cls}">${p.text}</div>
+            <div class="intro">${user.intro}</div>
+          </div>
+        </div>
+      `;
+
+      statusEl.textContent = `残り ${users.length - currentIndex - 0} 人（テスト用）`;
+    }
+
+    function checkMatch(targetId) {
+      if (alreadyLikedYou.has(targetId) && likedByYou.has(targetId)) {
+        const user = users.find(u => u.id === targetId);
+        matchBannerEl.style.display = "block";
+        matchBannerEl.textContent = `マッチしました！${user.nickname} さんとマッチングしています（テスト表示）。`;
+      }
+    }
+
+    likeBtn.addEventListener("click", () => {
+      if (currentIndex >= users.length) return;
+      const target = users[currentIndex];
+      likedByYou.add(target.id);
+      statusEl.textContent = `${target.nickname} さんに「いいね！」しました（テスト）。`;
+      checkMatch(target.id);
+      currentIndex++;
+      setTimeout(renderCard, 400);
+    });
+
+    skipBtn.addEventListener("click", () => {
+      if (currentIndex >= users.length) return;
+      const target = users[currentIndex];
+      statusEl.textContent = `${target.nickname} さんをスキップしました（テスト）。`;
+      currentIndex++;
+      setTimeout(renderCard, 200);
+    });
+
+    // 初期表示
+    renderCard();
+  </script>
+</body>
+</html>

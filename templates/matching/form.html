@@ -1,0 +1,46 @@
+{% extends "matching/base.html" %}
+
+{% block title %}プロフィール登録 | Match Lite{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="page-title">
+        プロフィール登録
+        <span class="pill">最初のひとことを用意しよう</span>
+    </div>
+    <p class="muted">
+        ニックネームだけでもOK。あとから編集できる想定の簡易フォームです。
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div>
+                <div class="field-label">ニックネーム</div>
+                {{ form.nickname }}
+            </div>
+            <div>
+                <div class="field-label">年齢</div>
+                {{ form.age }}
+            </div>
+            <div class="full">
+                <div class="field-label">エリア</div>
+                {{ form.location }}
+            </div>
+            <div class="full">
+                <div class="field-label">ひとこと</div>
+                {{ form.bio }}
+            </div>
+            <div class="full">
+                <div class="field-label">写真URL（あとでアップロード対応予定）</div>
+                {{ form.photo_url }}
+            </div>
+        </div>
+
+        <div style="margin-top:20px; display:flex; gap:12px; align-items:center;">
+            <button type="submit" class="btn btn-primary">プロフィールを保存する</button>
+            <a href="/profile/list/" class="btn btn-secondary">一覧に戻る</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

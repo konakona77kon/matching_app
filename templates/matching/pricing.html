@@ -1,0 +1,61 @@
+{% extends "matching/base.html" %}
+{% block title %}料金プラン | Match Lite{% endblock %}
+
+{% block content %}
+<div class="pricing-container">
+
+  <h1 class="pricing-title">料金プラン</h1>
+  <p class="pricing-subtitle">女性は全ての機能を完全無料でご利用いただけます。</p>
+
+  <div class="pricing-cards">
+
+    <!-- Free Plan -->
+    <div class="plan-card free-plan">
+      <div class="plan-header">
+        <div class="plan-name">無料プラン</div>
+        <div class="plan-price">¥0</div>
+      </div>
+      <ul class="plan-list">
+        <li>プロフィール閲覧</li>
+        <li>掲示板の投稿・閲覧</li>
+        <li>1日3回まで「いいね」</li>
+        <li>メッセージ1通（返信不可）</li>
+      </ul>
+      <button class="plan-btn disabled">利用中</button>
+    </div>
+
+    <!-- Light Plan -->
+    <div class="plan-card light-plan">
+      <div class="plan-header">
+        <div class="plan-name premium">ライトプラン</div>
+        <div class="plan-price">¥350 / 月</div>
+      </div>
+      <ul class="plan-list">
+        <li>メッセージ無制限</li>
+        <li>いいね上限アップ（1日30件）</li>
+        <li>掲示板の通話募集へ無制限参加</li>
+        <li>相手のアクティブ状態表示</li>
+      </ul>
+      <button class="plan-btn primary">ライトプランに登録</button>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="plan-card premium-plan">
+      <div class="plan-header">
+        <div class="plan-name gold">プレミアム</div>
+        <div class="plan-price">¥980 / 月</div>
+      </div>
+      <ul class="plan-list">
+        <li>全機能解放</li>
+        <li>おすすめ表示で上位に</li>
+        <li>検索結果でも優先表示</li>
+        <li>足あと表示（30日分）</li>
+        <li>プロフィール非公開モード</li>
+      </ul>
+      <button class="plan-btn highlight">プレミアムに登録</button>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,287 @@
+{% extends "matching/base.html" %}
+
+{% block title %}新規登録 | melo-match{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:480px; margin:24px auto;">
+    <h2 class="page-title">新規登録</h2>
+    <p class="page-subtitle">
+        アカウントとプロフィール情報をまとめて登録できます。あとから変更もできます。
+    </p>
+
+    <form method="post" enctype="multipart/form-data" style="display:flex; flex-direction:column; gap:10px;">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {# --- ログイン情報（User） --- #}
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                ユーザー名
+            </label>
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <div style="color:#e74c3c; font-size:11px;">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                パスワード
+            </label>
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+                <div style="color:#e74c3c; font-size:11px;">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                パスワード（確認）
+            </label>
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+                <div style="color:#e74c3c; font-size:11px;">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <hr style="margin:10px 0; border:none; border-top:1px solid #eee;">
+
+        {# --- プロフィール情報（UserProfile） --- #}
+
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                ニックネーム
+            </label>
+            <input type="text" name="nickname" placeholder="表示名を入力"
+                   style="width:100%; padding:8px; box-sizing:border-box;">
+        </div>
+
+        <div style="display:flex; gap:8px;">
+            <div style="flex:1;">
+                <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                    年齢
+                </label>
+                <select name="age_range" style="width:100%; padding:8px; box-sizing:border-box;">
+                    <option value="">選択してください</option>
+                    <option value="18">18歳</option>
+                    <option value="19">19歳</option>
+                    <option value="20">20歳</option>
+                    <option value="21">21歳</option>
+                    <option value="22">22歳</option>
+                    <option value="23">23歳</option>
+                    <option value="24">24歳</option>
+                    <option value="25">25歳</option>
+                    <option value="26">26歳</option>
+                    <option value="27">27歳</option>
+                    <option value="28">28歳</option>
+                    <option value="29">29歳</option>
+                    <option value="30">30歳</option>
+                    <option value="31">31歳</option>
+                    <option value="32">32歳</option>
+                    <option value="33">33歳</option>
+                    <option value="34">34歳</option>
+                    <option value="35">35歳</option>
+                    <option value="36">36歳</option>
+                    <option value="37">37歳</option>
+                    <option value="38">38歳</option>
+                    <option value="39">39歳</option>
+                    <option value="40">40歳</option>
+                    <option value="41">41歳</option>
+                    <option value="42">42歳</option>
+                    <option value="43">43歳</option>
+                    <option value="44">44歳</option>
+                    <option value="45">45歳</option>
+                    <option value="46">46歳</option>
+                    <option value="47">47歳</option>
+                    <option value="48">48歳</option>
+                    <option value="49">49歳</option>
+                    <option value="50">50歳</option>
+                    <option value="51">51歳</option>
+                    <option value="52">52歳</option>
+                    <option value="53">53歳</option>
+                    <option value="54">54歳</option>
+                    <option value="55">55歳</option>
+                    <option value="56">56歳</option>
+                    <option value="57">57歳</option>
+                    <option value="58">58歳</option>
+                    <option value="59">59歳</option>
+                    <option value="60">60歳</option>
+                    <option value="61">61歳</option>
+                    <option value="62">62歳</option>
+                    <option value="63">63歳</option>
+                    <option value="64">64歳</option>
+                    <option value="65">65歳以上</option>
+                </select>
+            </div>
+            <div style="flex:1;">
+                <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                    居住エリア
+                </label>
+                <input type="text" name="area" placeholder="例: 新宿・渋谷あたり"
+                       style="width:100%; padding:8px; box-sizing:border-box;">
+            </div>
+        </div>
+
+        {# ▼ 都道府県：ドロップダウン #}
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                都道府県（任意）
+            </label>
+            <select name="prefecture" style="width:100%; padding:8px; box-sizing:border-box;">
+                <option value="">選択してください</option>
+                <option value="北海道">北海道</option>
+                <option value="青森県">青森県</option>
+                <option value="岩手県">岩手県</option>
+                <option value="宮城県">宮城県</option>
+                <option value="秋田県">秋田県</option>
+                <option value="山形県">山形県</option>
+                <option value="福島県">福島県</option>
+                <option value="茨城県">茨城県</option>
+                <option value="栃木県">栃木県</option>
+                <option value="群馬県">群馬県</option>
+                <option value="埼玉県">埼玉県</option>
+                <option value="千葉県">千葉県</option>
+                <option value="東京都">東京都</option>
+                <option value="神奈川県">神奈川県</option>
+                <option value="新潟県">新潟県</option>
+                <option value="富山県">富山県</option>
+                <option value="石川県">石川県</option>
+                <option value="福井県">福井県</option>
+                <option value="山梨県">山梨県</option>
+                <option value="長野県">長野県</option>
+                <option value="岐阜県">岐阜県</option>
+                <option value="静岡県">静岡県</option>
+                <option value="愛知県">愛知県</option>
+                <option value="三重県">三重県</option>
+                <option value="滋賀県">滋賀県</option>
+                <option value="京都府">京都府</option>
+                <option value="大阪府">大阪府</option>
+                <option value="兵庫県">兵庫県</option>
+                <option value="奈良県">奈良県</option>
+                <option value="和歌山県">和歌山県</option>
+                <option value="鳥取県">鳥取県</option>
+                <option value="島根県">島根県</option>
+                <option value="岡山県">岡山県</option>
+                <option value="広島県">広島県</option>
+                <option value="山口県">山口県</option>
+                <option value="徳島県">徳島県</option>
+                <option value="香川県">香川県</option>
+                <option value="愛媛県">愛媛県</option>
+                <option value="高知県">高知県</option>
+                <option value="福岡県">福岡県</option>
+                <option value="佐賀県">佐賀県</option>
+                <option value="長崎県">長崎県</option>
+                <option value="熊本県">熊本県</option>
+                <option value="大分県">大分県</option>
+                <option value="宮崎県">宮崎県</option>
+                <option value="鹿児島県">鹿児島県</option>
+                <option value="沖縄県">沖縄県</option>
+            </select>
+        </div>
+
+        <div style="display:flex; gap:8px;">
+            <div style="flex:1;">
+                <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                    性別
+                </label>
+                <select name="gender"
+                required
+                 style="width:100%; padding:8px; box-sizing:border-box;">
+                    <option value="">選択しない</option>
+                    <option value="M">男性</option>
+                    <option value="F">女性</option>
+                    <option value="O">その他</option>
+                </select>
+            </div>
+            <div style="flex:1;">
+                <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                    年収（目安・任意）
+                </label>
+                <select name="income" style="width:100%; padding:8px; box-sizing:border-box;">
+                    <option value="">選択しない</option>
+                    <option value="200">〜200万円</option>
+                    <option value="300">〜300万円</option>
+                    <option value="400">〜400万円</option>
+                    <option value="500">〜500万円</option>
+                    <option value="600">〜600万円</option>
+                    <option value="800">〜800万円</option>
+                    <option value="1000">〜1000万円</option>
+                    <option value="1500">1000万円以上</option>
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                職業
+            </label>
+            <input type="text" name="job" placeholder="例: 会社員 / 学生 など"
+                   style="width:100%; padding:8px; box-sizing:border-box;">
+        </div>
+
+    <div>
+    <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+        利用目的
+    </label>
+    <select name="purpose"
+            style="width:100%; padding:8px; box-sizing:border-box;">
+
+        <option value="" {% if not me.purpose %}selected{% endif %}>選択しない</option>
+
+        <option value="friend" {% if me.purpose == "friend" %}selected{% endif %}>
+            友達作り
+        </option>
+
+        <option value="love" {% if me.purpose == "love" %}selected{% endif %}>
+            恋人探し
+        </option>
+
+        <option value="both" {% if me.purpose == "both" %}selected{% endif %}>
+            友達も恋人も両方
+        </option>
+
+        <option value="hobby" {% if me.purpose == "hobby" %}selected{% endif %}>
+            趣味友達
+        </option>
+
+        <option value="talk" {% if me.purpose == "talk" %}selected{% endif %}>
+            暇つぶし・話し相手
+        </option>
+
+    </select>
+</div>
+
+
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                自己紹介（ひとこと）
+            </label>
+            <textarea name="bio" rows="3" placeholder="簡単な自己紹介を書いてみましょう"
+                      style="width:100%; padding:8px; box-sizing:border-box;"></textarea>
+        </div>
+
+        <div>
+            <label style="font-size:13px; color:#555; display:block; margin-bottom:4px;">
+                メイン写真（任意）
+            </label>
+            <input type="file" name="avatar" accept="image/*">
+        </div>
+
+        <button class="btn-primary" type="submit" style="margin-top:12px; width:100%; text-align:center;">
+            登録してはじめる
+        </button>
+
+        {% if form.errors %}
+            <div style="color:#e74c3c; font-size:12px; margin-top:8px;">
+                入力内容にエラーがあります。<br>
+                {{ form.errors }}
+            </div>
+        {% endif %}
+    </form>
+
+    <div style="margin-top:12px; font-size:13px; text-align:center;">
+        すでにアカウントをお持ちの方は
+        <a href="{% url 'login' %}">ログイン</a>
+    </div>
+</div>
+{% endblock %}

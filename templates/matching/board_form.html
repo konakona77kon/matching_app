@@ -1,0 +1,46 @@
+{% extends "matching/base.html" %}
+
+{% block title %}掲示板に投稿 | melo-match{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px; margin:24px auto;">
+  <h2 class="page-title">掲示板に投稿</h2>
+  <p class="page-subtitle">
+    通話相手の募集や、ゆるい一言など自由に投稿できます。
+  </p>
+
+  <form method="post" enctype="multipart/form-data"
+        style="display:flex; flex-direction:column; gap:10px;">
+    {% csrf_token %}
+
+    <div>
+      <label class="form-label">タイトル</label>
+      {{ form.title }}
+    </div>
+
+    <div>
+      <label class="form-label">本文</label>
+      {{ form.body }}
+    </div>
+
+    <div>
+      <label class="form-label">画像（任意）</label>
+      {{ form.image }}
+    </div>
+
+    <div>
+      <label style="font-size:13px; color:#555;">
+        {{ form.is_call_invite }}
+        通話相手を募集する
+      </label>
+    </div>
+
+    <button type="submit" class="btn-primary" style="margin-top:8px;">
+      投稿する
+    </button>
+    <a href="{% url 'board_list' %}" class="btn-ghost" style="margin-top:4px; text-align:center;">
+      キャンセルして一覧に戻る
+    </a>
+  </form>
+</div>
+{% endblock %}

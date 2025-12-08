@@ -1,0 +1,56 @@
+{% extends "matching/base.html" %}
+
+{% block title %}掲示板 | melo-match{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px; margin:24px auto;">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+    <h2 class="page-title" style="margin-bottom:4px;">
+      {{ post.title }}
+      {% if post.is_call_invite %}
+        <span class="pill">通話募集</span>
+      {% endif %}
+    </h2>
+    <a href="{% url 'board_list' %}" class="btn-ghost btn-sm">一覧に戻る</a>
+  </div>
+
+  <div style="font-size:13px; color:#777; margin-bottom:8px;">
+    投稿者:
+    <a href="{% url 'profile_detail' post.author.pk %}">
+      {{ post.author.nickname }}
+    </a>
+    {% if post.author.age_range %} / {{ post.author.age_range }}歳{% endif %}
+    {% if post.author.prefecture %} / {{ post.author.prefecture }}{% endif %}
+    <br>
+    投稿日時: {{ post.created_at|date:"Y/m/d H:i" }}
+  </div>
+
+  {% if post.image %}
+    <div style="margin:8px 0;">
+      <img src="{{ post.image.url }}" alt="" style="width:100%; border-radius:12px; object-fit:cover;">
+    </div>
+  {% endif %}
+
+  <div style="font-size:14px; white-space:pre-wrap; margin-top:8px;">
+    {{ post.body|default:"（本文なし）" }}
+  </div>
+
+  <hr style="margin:16px 0;">
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <a href="{% url 'profile_detail' post.author.pk %}" class="btn-ghost">
+      👀 プロフィールを見る
+    </a>
+
+    {# 既存の start_chat / いいねロジックと合わせて好きな導線に #}
+    <a href="{% url 'send_like' post.author.pk %}" class="btn-primary">
+      👍 いいねする
+    </a>
+
+    {# 既にマッチしていればチャットへ #}
+    <a href="{% url 'start_chat' post.author.pk %}" class="btn-primary">
+      💬 チャットで話したい
+    </a>
+  </div>
+</div>
+{% endblock %}

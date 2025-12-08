@@ -1,0 +1,333 @@
+{% extends "matching/base.html" %}
+
+{% block title %}プロファイル編集 | melo-match{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px; margin:24px auto;">
+  <h2 class="page-title">プロフィール編集</h2>
+  <p class="page-subtitle">
+      あなたの情報を更新できます。あとから何度でも変更OKです。
+  </p>
+
+  <form method="post" enctype="multipart/form-data"
+        style="display:flex; flex-direction:column; gap:12px;">
+      {% csrf_token %}
+
+      {# ---- ニックネーム ---- #}
+      <div>
+          <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+              ニックネーム
+          </label>
+          <input type="text"
+                 name="nickname"
+                 value="{{ me.nickname }}"
+                 placeholder="表示名を入力"
+                 style="width:100%; padding:8px; box-sizing:border-box;">
+      </div>
+
+      {# ---- 年齢・エリア ---- #}
+      <div style="display:flex; gap:8px;">
+          <div style="flex:1;">
+              <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+                  年齢
+              </label>
+              <select name="age_range"
+                      style="width:100%; padding:8px; box-sizing:border-box;">
+                  <option value="" {% if not me.age_range %}selected{% endif %}>選択しない</option>
+                  <option value="18" {% if me.age_range == "18" %}selected{% endif %}>18歳</option>
+                  <option value="19" {% if me.age_range == "19" %}selected{% endif %}>19歳</option>
+                  <option value="20" {% if me.age_range == "20" %}selected{% endif %}>20歳</option>
+                  <option value="21" {% if me.age_range == "21" %}selected{% endif %}>21歳</option>
+                  <option value="22" {% if me.age_range == "22" %}selected{% endif %}>22歳</option>
+                  <option value="23" {% if me.age_range == "23" %}selected{% endif %}>23歳</option>
+                  <option value="24" {% if me.age_range == "24" %}selected{% endif %}>24歳</option>
+                  <option value="25" {% if me.age_range == "25" %}selected{% endif %}>25歳</option>
+                  <option value="26" {% if me.age_range == "26" %}selected{% endif %}>26歳</option>
+                  <option value="27" {% if me.age_range == "27" %}selected{% endif %}>27歳</option>
+                  <option value="28" {% if me.age_range == "28" %}selected{% endif %}>28歳</option>
+                  <option value="29" {% if me.age_range == "29" %}selected{% endif %}>29歳</option>
+                  <option value="30" {% if me.age_range == "30" %}selected{% endif %}>30歳</option>
+                  <option value="31" {% if me.age_range == "31" %}selected{% endif %}>31歳</option>
+                  <option value="32" {% if me.age_range == "32" %}selected{% endif %}>32歳</option>
+                  <option value="33" {% if me.age_range == "33" %}selected{% endif %}>33歳</option>
+                  <option value="34" {% if me.age_range == "34" %}selected{% endif %}>34歳</option>
+                  <option value="35" {% if me.age_range == "35" %}selected{% endif %}>35歳</option>
+                  <option value="36" {% if me.age_range == "36" %}selected{% endif %}>36歳</option>
+                  <option value="37" {% if me.age_range == "37" %}selected{% endif %}>37歳</option>
+                  <option value="38" {% if me.age_range == "38" %}selected{% endif %}>38歳</option>
+                  <option value="39" {% if me.age_range == "39" %}selected{% endif %}>39歳</option>
+                  <option value="40" {% if me.age_range == "40" %}selected{% endif %}>40歳</option>
+                  <option value="41" {% if me.age_range == "41" %}selected{% endif %}>41歳</option>
+                  <option value="42" {% if me.age_range == "42" %}selected{% endif %}>42歳</option>
+                  <option value="43" {% if me.age_range == "43" %}selected{% endif %}>43歳</option>
+                  <option value="44" {% if me.age_range == "44" %}selected{% endif %}>44歳</option>
+                  <option value="45" {% if me.age_range == "45" %}selected{% endif %}>45歳</option>
+                  <option value="46" {% if me.age_range == "46" %}selected{% endif %}>46歳</option>
+                  <option value="47" {% if me.age_range == "47" %}selected{% endif %}>47歳</option>
+                  <option value="48" {% if me.age_range == "48" %}selected{% endif %}>48歳</option>
+                  <option value="49" {% if me.age_range == "49" %}selected{% endif %}>49歳</option>
+                  <option value="50" {% if me.age_range == "50" %}selected{% endif %}>50歳</option>
+                  <option value="51" {% if me.age_range == "51" %}selected{% endif %}>51歳</option>
+                  <option value="52" {% if me.age_range == "52" %}selected{% endif %}>52歳</option>
+                  <option value="53" {% if me.age_range == "53" %}selected{% endif %}>53歳</option>
+                  <option value="54" {% if me.age_range == "54" %}selected{% endif %}>54歳</option>
+                  <option value="55" {% if me.age_range == "55" %}selected{% endif %}>55歳</option>
+                  <option value="56" {% if me.age_range == "56" %}selected{% endif %}>56歳</option>
+                  <option value="57" {% if me.age_range == "57" %}selected{% endif %}>57歳</option>
+                  <option value="58" {% if me.age_range == "58" %}selected{% endif %}>58歳</option>
+                  <option value="59" {% if me.age_range == "59" %}selected{% endif %}>59歳</option>
+                  <option value="60" {% if me.age_range == "60" %}selected{% endif %}>60歳</option>
+                  <option value="61" {% if me.age_range == "61" %}selected{% endif %}>61歳</option>
+                  <option value="62" {% if me.age_range == "62" %}selected{% endif %}>62歳</option>
+                  <option value="63" {% if me.age_range == "63" %}selected{% endif %}>63歳</option>
+                  <option value="64" {% if me.age_range == "64" %}selected{% endif %}>64歳</option>
+                  <option value="65" {% if me.age_range == "65" %}selected{% endif %}>65歳以上</option>
+              </select>
+          </div>
+
+          <div style="flex:1;">
+              <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+                  居住エリア
+              </label>
+              <input type="text"
+                     name="area"
+                     value="{{ me.area }}"
+                     placeholder="例: 新宿・渋谷あたり"
+                     style="width:100%; padding:8px; box-sizing:border-box;">
+          </div>
+      </div>
+
+      {# ---- 都道府県 ---- #}
+      <div>
+          <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+              都道府県（任意）
+          </label>
+          <select name="prefecture"
+                  style="width:100%; padding:8px; box-sizing:border-box;">
+              <option value="">選択しない</option>
+              {% with me.prefecture as pref %}
+                <option value="北海道"   {% if pref == "北海道" %}selected{% endif %}>北海道</option>
+                <option value="青森県"   {% if pref == "青森県" %}selected{% endif %}>青森県</option>
+                <option value="岩手県"   {% if pref == "岩手県" %}selected{% endif %}>岩手県</option>
+                <option value="宮城県"   {% if pref == "宮城県" %}selected{% endif %}>宮城県</option>
+                <option value="秋田県"   {% if pref == "秋田県" %}selected{% endif %}>秋田県</option>
+                <option value="山形県"   {% if pref == "山形県" %}selected{% endif %}>山形県</option>
+                <option value="福島県"   {% if pref == "福島県" %}selected{% endif %}>福島県</option>
+                <option value="茨城県"   {% if pref == "茨城県" %}selected{% endif %}>茨城県</option>
+                <option value="栃木県"   {% if pref == "栃木県" %}selected{% endif %}>栃木県</option>
+                <option value="群馬県"   {% if pref == "群馬県" %}selected{% endif %}>群馬県</option>
+                <option value="埼玉県"   {% if pref == "埼玉県" %}selected{% endif %}>埼玉県</option>
+                <option value="千葉県"   {% if pref == "千葉県" %}selected{% endif %}>千葉県</option>
+                <option value="東京都"   {% if pref == "東京都" %}selected{% endif %}>東京都</option>
+                <option value="神奈川県" {% if pref == "神奈川県" %}selected{% endif %}>神奈川県</option>
+                <option value="新潟県"   {% if pref == "新潟県" %}selected{% endif %}>新潟県</option>
+                <option value="富山県"   {% if pref == "富山県" %}selected{% endif %}>富山県</option>
+                <option value="石川県"   {% if pref == "石川県" %}selected{% endif %}>石川県</option>
+                <option value="福井県"   {% if pref == "福井県" %}selected{% endif %}>福井県</option>
+                <option value="山梨県"   {% if pref == "山梨県" %}selected{% endif %}>山梨県</option>
+                <option value="長野県"   {% if pref == "長野県" %}selected{% endif %}>長野県</option>
+                <option value="岐阜県"   {% if pref == "岐阜県" %}selected{% endif %}>岐阜県</option>
+                <option value="静岡県"   {% if pref == "静岡県" %}selected{% endif %}>静岡県</option>
+                <option value="愛知県"   {% if pref == "愛知県" %}selected{% endif %}>愛知県</option>
+                <option value="三重県"   {% if pref == "三重県" %}selected{% endif %}>三重県</option>
+                <option value="滋賀県"   {% if pref == "滋賀県" %}selected{% endif %}>滋賀県</option>
+                <option value="京都府"   {% if pref == "京都府" %}selected{% endif %}>京都府</option>
+                <option value="大阪府"   {% if pref == "大阪府" %}selected{% endif %}>大阪府</option>
+                <option value="兵庫県"   {% if pref == "兵庫県" %}selected{% endif %}>兵庫県</option>
+                <option value="奈良県"   {% if pref == "奈良県" %}selected{% endif %}>奈良県</option>
+                <option value="和歌山県" {% if pref == "和歌山県" %}selected{% endif %}>和歌山県</option>
+                <option value="鳥取県"   {% if pref == "鳥取県" %}selected{% endif %}>鳥取県</option>
+                <option value="島根県"   {% if pref == "島根県" %}selected{% endif %}>島根県</option>
+                <option value="岡山県"   {% if pref == "岡山県" %}selected{% endif %}>岡山県</option>
+                <option value="広島県"   {% if pref == "広島県" %}selected{% endif %}>広島県</option>
+                <option value="山口県"   {% if pref == "山口県" %}selected{% endif %}>山口県</option>
+                <option value="徳島県"   {% if pref == "徳島県" %}selected{% endif %}>徳島県</option>
+                <option value="香川県"   {% if pref == "香川県" %}selected{% endif %}>香川県</option>
+                <option value="愛媛県"   {% if pref == "愛媛県" %}selected{% endif %}>愛媛県</option>
+                <option value="高知県"   {% if pref == "高知県" %}selected{% endif %}>高知県</option>
+                <option value="福岡県"   {% if pref == "福岡県" %}selected{% endif %}>福岡県</option>
+                <option value="佐賀県"   {% if pref == "佐賀県" %}selected{% endif %}>佐賀県</option>
+                <option value="長崎県"   {% if pref == "長崎県" %}selected{% endif %}>長崎県</option>
+                <option value="熊本県"   {% if pref == "熊本県" %}selected{% endif %}>熊本県</option>
+                <option value="大分県"   {% if pref == "大分県" %}selected{% endif %}>大分県</option>
+                <option value="宮崎県"   {% if pref == "宮崎県" %}selected{% endif %}>宮崎県</option>
+                <option value="鹿児島県" {% if pref == "鹿児島県" %}selected{% endif %}>鹿児島県</option>
+                <option value="沖縄県"   {% if pref == "沖縄県" %}selected{% endif %}>沖縄県</option>
+              {% endwith %}
+          </select>
+      </div>
+
+      {# ---- 性別 & 年収 ---- #}
+      <div style="display:flex; gap:8px;">
+          <div style="flex:1;">
+              <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+                  性別
+              </label>
+              <select name="gender"
+              required
+                      style="width:100%; padding:8px; box-sizing:border-box;">
+                  <option value="" {% if not me.gender %}selected{% endif %}>選択しない</option>
+                  <option value="M" {% if me.gender == "M" %}selected{% endif %}>男性</option>
+                  <option value="F" {% if me.gender == "F" %}selected{% endif %}>女性</option>
+                  <option value="O" {% if me.gender == "O" %}selected{% endif %}>その他</option>
+              </select>
+          </div>
+
+          <div style="flex:1;">
+              <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+                  年収（目安・任意）
+              </label>
+              <select name="income"
+                      style="width:100%; padding:8px; box-sizing:border-box;">
+                  <option value="" {% if not me.income %}selected{% endif %}>選択しない</option>
+                  <option value="200"  {% if me.income == 200 %}selected{% endif %}>〜200万円</option>
+                  <option value="300"  {% if me.income == 300 %}selected{% endif %}>〜300万円</option>
+                  <option value="400"  {% if me.income == 400 %}selected{% endif %}>〜400万円</option>
+                  <option value="500"  {% if me.income == 500 %}selected{% endif %}>〜500万円</option>
+                  <option value="600"  {% if me.income == 600 %}selected{% endif %}>〜600万円</option>
+                  <option value="800"  {% if me.income == 800 %}selected{% endif %}>〜800万円</option>
+                  <option value="1000" {% if me.income == 1000 %}selected{% endif %}>〜1000万円</option>
+                  <option value="1500" {% if me.income == 1500 %}selected{% endif %}>1000万円以上</option>
+              </select>
+          </div>
+      </div>
+
+      {# ---- 職業 ---- #}
+      <div>
+          <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+              職業
+          </label>
+          <input type="text"
+                 name="job"
+                 value="{{ me.job }}"
+                 placeholder="例: 会社員 / 学生 など"
+                 style="width:100%; padding:8px; box-sizing:border-box;">
+      </div>
+
+      {# ---- 利用目的 ---- #}
+ <div>
+    <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+        利用目的
+    </label>
+    <select name="purpose"
+            style="width:100%; padding:8px; box-sizing:border-box;">
+
+        <option value="" {% if not me.purpose %}selected{% endif %}>選択しない</option>
+
+        <option value="friend" {% if me.purpose == "friend" %}selected{% endif %}>
+            友達作り
+        </option>
+
+        <option value="love" {% if me.purpose == "love" %}selected{% endif %}>
+            恋人探し
+        </option>
+
+        <option value="both" {% if me.purpose == "both" %}selected{% endif %}>
+            友達も恋人も両方
+        </option>
+
+        <option value="hobby" {% if me.purpose == "hobby" %}selected{% endif %}>
+            趣味友達
+        </option>
+
+        <option value="talk" {% if me.purpose == "talk" %}selected{% endif %}>
+            暇つぶし・話し相手
+        </option>
+
+    </select>
+</div>
+
+
+      {# ---- 自己紹介 ---- #}
+      <div>
+          <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+              自己紹介（ひとこと）
+          </label>
+          <textarea name="bio"
+                    rows="3"
+                    placeholder="簡単な自己紹介を書いてみましょう"
+                    style="width:100%; padding:8px; box-sizing:border-box;">{{ me.bio }}</textarea>
+      </div>
+
+      {# ---- メイン写真 ---- #}
+      <div>
+          <label style="font-size:13px; color:#666; display:block; margin-bottom:4px;">
+              メイン写真
+          </label>
+          {% if me.avatar %}
+            <div style="margin-bottom:6px;">
+                <img src="{{ me.avatar.url }}"
+                     alt="current avatar"
+                     style="width:80px; height:80px; object-fit:cover; border-radius:12px;">
+            </div>
+          {% endif %}
+          <input type="file" name="avatar" accept="image/*">
+          <div style="font-size:11px; color:#999; margin-top:4px;">
+              新しい画像を選ぶと、現在のメイン写真が上書きされます。
+          </div>
+      </div>
+
+      {# --- サブ写真アップロード（複数） --- #}
+      <hr style="margin:12px 0; border:none; border-top:1px solid #f0d6e3;">
+
+      <div>
+          <div style="font-size:13px; color:#666; margin-bottom:4px;">
+              追加プロフィール写真（複数枚OK）
+          </div>
+          <input type="file"
+                 name="photos"
+                 accept="image/*"
+                 multiple
+                 style="font-size:12px;">
+          <div style="font-size:11px; color:#999; margin-top:4px;">
+              スマホで見やすい写真を選んでください。（複数選択できます）
+          </div>
+      </div>
+
+      {# 既に登録済みのサブ写真一覧 #}
+      {% if photos %}
+        <div style="margin-top:8px;">
+            <div style="font-size:13px; color:#666; margin-bottom:4px;">
+                登録済みの追加プロフィール写真
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                {% for p in photos %}
+                  {% if p.image %}
+                    <div style="
+                        width:80px;
+                        height:80px;
+                        border-radius:12px;
+                        overflow:hidden;
+                        background:#f5f5f5;
+                        flex-shrink:0;
+                    ">
+                        <img src="{{ p.image.url }}"
+                             alt="photo"
+                             style="width:100%; height:100%; object-fit:cover;">
+                    </div>
+                  {% endif %}
+                {% endfor %}
+            </div>
+            <div style="font-size:11px; color:#999; margin-top:4px;">
+                ※ いまは削除機能はありません（あとで追加予定）。
+            </div>
+        </div>
+      {% endif %}
+
+      {# フォーム全体のエラー表示（あれば） #}
+      {% if form and form.errors %}
+          <div style="color:#e74c3c; font-size:12px; margin-top:8px;">
+              入力内容にエラーがあります。<br>
+              {{ form.errors }}
+          </div>
+      {% endif %}
+
+      <button type="submit" class="btn-primary" style="margin-top:12px;">
+          保存する
+      </button>
+      <a href="{% url 'my_profile' %}" class="btn-ghost" style="margin-top:4px; text-align:center;">
+          キャンセルしてプロフィール画面に戻る
+      </a>
+  </form>
+</div>
+{% endblock %}

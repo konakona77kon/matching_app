@@ -1,0 +1,108 @@
+{# templates/matching/like_inbox.html #}
+{% extends "matching/base.html" %}
+
+{% block title %}通知 | Match Lite{% endblock %}
+
+{% block content %}
+<div class="page-section">
+
+  <h1 class="page-title">通知</h1>
+
+  {# ① 新しくマッチした相手 #}
+  {% if new_matches %}
+    <h2 class="section-title">新しくマッチした相手</h2>
+
+    {% for item in new_matches %}
+      {% with p=item.partner room=item.room %}
+      <div class="card notice-card">
+        <div class="notice-main">
+          <div class="notice-text">
+            🎉 <strong>{{ p.nickname }}</strong> さんとマッチしました！
+          </div>
+          <div class="notice-sub">
+            年齢: {{ p.age_range|default:"未設定" }} ／
+            居住地: {{ p.prefecture|default:"未設定" }}
+          </div>
+        </div>
+
+        <div class="notice-actions">
+          <a href="{% url 'profile_detail' pk=p.id %}" class="btn-primary btn-sm">
+            プロフィールを見る
+          </a>
+
+          {% if room %}
+            <a href="{% url 'chat_room' room_id=room.id %}" class="btn-ghost btn-sm">
+              チャットを開く
+            </a>
+          {% else %}
+            {# 万が一部屋が無ければ start_chat にフォールバック #}
+            <a href="{% url 'start_chat' pk=p.id %}" class="btn-ghost btn-sm">
+              チャットを開く
+            </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endwith %}
+    {% endfor %}
+  {% endif %}
+
+  {# ② 片想いのいいね一覧（今までのリスト） #}
+  <h2 class="section-title">届いているいいね</h2>
+  {% if incoming_likes %}
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      {% for like in incoming_likes %}
+        {% with p=like.from_user %}
+        <div style="
+            border:1px solid #f3d2e4;
+            border-radius:12px;
+            padding:10px 12px;
+            display:flex;
+            align-items:center;
+            gap:10px;
+            background:#fffdfd;
+        ">
+          {# アイコン風 #}
+          {% if p.avatar %}
+            <img src="{{ p.avatar.url }}" alt="{{ p.nickname }} さん"
+                 style="width:48px;height:48px;border-radius:50%;object-fit:cover;">
+          {% else %}
+            <div style="
+                width:48px;height:48px;border-radius:50%;
+                background:#ffe4ef;color:#ff4b8a;
+                display:flex;align-items:center;justify-content:center;
+                font-weight:bold;
+            ">
+              {{ p.nickname|first|default:"?" }}
+            </div>
+          {% endif %}
+
+          <div style="flex:1;">
+            <div style="font-weight:600;">
+              {{ p.nickname }} さん からいいねが届きました
+            </div>
+            <div style="font-size:12px;color:#777;margin-top:2px;">
+              年齢: {{ p.age_range|default:"未設定" }} ／
+              居住地: {{ p.prefecture|default:"未設定" }}
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:4px;">
+            <a href="{% url 'profile_detail' p.pk %}" class="btn-ghost">
+              プロフィールを見る
+            </a>
+            <a href="{% url 'send_like' p.pk %}" class="btn-primary">
+              いいね返しする
+            </a>
+          </div>
+        </div>
+        {% endwith %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p style="font-size:14px;color:#777;margin-top:8px;">
+      まだ新しい「いいね」は届いていません。<br>
+      プロフィール一覧から気になる人にいいねしてみましょう。
+    </p>
+  {% endif %}
+</div>
+{% endblock %}

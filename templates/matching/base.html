@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+
+
+
+    <meta charset="UTF-8">
+
+    <!-- ✅ スマホ向け表示 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}matching app{% endblock %}</title>
+
+    <style>
+
+
+    /* ========================== */
+/*   Pricing Page (料金ページ) */
+/* ========================== */
+
+.menu-button {
+    cursor: pointer;
+    font-size: 22px;
+    padding: 4px 8px;
+    user-select: none;
+}
+
+.top-menu {
+    position: absolute;
+    right: 12px;
+    top: 50px;
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: none;
+    z-index: 9999;
+    width: 180px;
+}
+
+.top-menu a {
+    display: block;
+    padding: 10px 16px;
+    font-size: 14px;
+    color: #333;
+    text-decoration: none;
+}
+
+.top-menu a:hover {
+    background: #f2f2f2;
+}
+
+.pricing-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 16px 50px;
+  text-align: center;
+}
+
+.pricing-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #ff6f9b;
+}
+
+.pricing-subtitle {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+.pricing-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ▼ 各カード */
+.plan-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 6px 18px rgba(255, 150, 170, 0.15);
+  text-align: left;
+}
+
+/* タイトルと価格 */
+.plan-header {
+  margin-bottom: 12px;
+}
+
+.plan-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.plan-name.premium { color: #ff6f9b; }
+.plan-name.gold { color: #e0b200; }
+
+.plan-price {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* 内容リスト */
+.plan-list {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.plan-list li {
+  padding: 4px 0;
+}
+
+/* ボタン */
+.plan-btn {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+}
+
+.plan-btn.primary {
+  background: linear-gradient(135deg, #ff8fb1, #ff6f9b);
+  color: white;
+  box-shadow: 0 4px 10px rgba(255, 120, 170, 0.35);
+}
+
+.plan-btn.highlight {
+  background: linear-gradient(135deg, #ffe27a, #f9b700);
+  color: #664d00;
+  box-shadow: 0 4px 10px rgba(255, 200, 50, 0.35);
+}
+
+.plan-btn.disabled {
+  background: #eee;
+  color: #bbb;
+  cursor: default;
+}
+
+/* ライトプラン枠のアクセント */
+.light-plan {
+  border-left: 6px solid #ff8fb1;
+}
+
+.premium-plan {
+  border-left: 6px solid #f7c94a;
+}
+
+/* スマホ対応 */
+@media (max-width: 768px) {
+  .plan-card {
+    padding: 16px;
+  }
+  .plan-name {
+    font-size: 17px;
+  }
+  .plan-price {
+    font-size: 20px;
+  }
+  .plan-list {
+    font-size: 13px;
+  }
+}
+
+
+
+
+        :root {
+            --pink: #ff8fb1;
+            --pink-strong: #ff6f9b;
+            --pink-light: #ffe4ef;
+            --bg: #fff7fb;
+            --border: #f0d6e3;
+            --text-main: #333;
+            --text-sub: #777;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 18px;
+            color: var(--pink-strong);
+        }
+
+        .brand small {
+            font-weight: 400;
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-left: 4px;
+        }
+
+        .nav-links {
+            font-size: 13px;
+        }
+
+        .nav-links a {
+            color: #555;
+            text-decoration: none;
+            margin-left: 10px;
+            padding: 4px 8px;
+            border-radius: 999px;
+        }
+
+        .nav-links a:hover {
+            background: var(--pink-light);
+        }
+
+        .nav-links .primary {
+            background: var(--pink);
+            color: #fff;
+        }
+
+        /* ✅ 中身全体レイアウト（カード固定はやめる） */
+        main {
+            max-width: 900px;
+            margin: 24px auto 80px;
+            padding: 0 16px 80px;  /* ← ボトムナビの高さ分を追加 */
+        }
+
+        /* カードが欲しいページ用の共通クラス（任意で使う） */
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            padding: 20px 20px 24px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            margin: 0 0 8px;
+        }
+
+        .page-subtitle {
+            font-size: 13px;
+            color: var(--text-sub);
+            margin-bottom: 16px;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--pink);
+            color: #fff;
+            text-decoration: none;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: var(--pink-strong);
+        }
+
+        .btn-ghost {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--pink);
+            color: var(--pink-strong);
+            text-decoration: none;
+            font-size: 13px;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .btn-ghost:hover {
+            background: var(--pink-light);
+        }
+
+        .text-link {
+            color: var(--pink-strong);
+            text-decoration: none;
+        }
+
+        .text-link:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-sub);
+            padding: 12px 0 18px;
+        }
+
+        .hello-user {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-right: 6px;
+        }
+
+        /* === 新着ドット（新規メッセージ・いいねなど用） === */
+        .badge-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4f8b;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
+
+/* === 画面下固定ボトムナビ（新デザイン） === */
+.bottom-nav-wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    padding: 8px 12px 14px;
+    background: linear-gradient(to top, #ffe9f2 0%, rgba(255,233,242,0) 70%);
+    pointer-events: none;   /* 中だけタップ可能にする */
+}
+
+.bottom-nav {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #ffffff;
+    box-shadow: 0 8px 22px rgba(255, 137, 184, 0.35);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+    pointer-events: auto;
+}
+
+/* 各タブ */
+.bottom-nav__item {
+    flex: 1;
+    min-width: 0;
+    text-decoration: none;
+    color: var(--text-main);
+    font-size: 11px;
+    padding: 6px 4px;
+    border-radius: 999px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    transition: background 0.15s ease, transform 0.1s ease, color 0.15s ease;
+}
+
+.bottom-nav__item:hover {
+    background: #fff6fb;
+    transform: translateY(-1px);
+}
+
+/* アクティブ */
+.bottom-nav__item.is-active {
+    background: #ffe0f0;
+    color: #ff5c9b;
+    font-weight: 600;
+}
+
+/* アイコンとラベル */
+.bottom-nav__icon {
+    position: relative;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.bottom-nav__label {
+    display: block;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+/* 通知バッジ（ドット） */
+.bottom-nav__badge {
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #ff4b8a;
+    box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* スマホ調整 */
+@media (max-width: 768px) {
+    .bottom-nav-wrapper {
+        padding: 6px 8px 10px;
+    }
+
+    .bottom-nav {
+        max-width: 100%;
+        margin: 0 8px;
+        padding: 6px 8px;
+        gap: 2px;
+    }
+
+    .bottom-nav__icon {
+        font-size: 17px;
+    }
+
+    .bottom-nav__label {
+        font-size: 10px;
+    }
+}
+
+
+
+
+
+
+        /* ✅ スマホ用調整 */
+        @media (max-width: 768px) {
+            header {
+                padding: 8px 12px;
+            }
+
+            .brand {
+                font-size: 16px;
+            }
+
+            .nav-links {
+                font-size: 12px;
+            }
+
+            .nav-links a {
+                margin-left: 6px;
+                padding: 3px 6px;
+            }
+
+            main {
+                margin: 12px auto 80px;
+                padding: 0 10px 80px;
+            }
+
+            .card {
+                border-radius: 14px;
+                padding: 16px 14px 20px;
+            }
+
+            .btn-primary,
+            .btn-ghost {
+                min-height: 44px;   /* 指で押しやすい高さ */
+                padding: 9px 14px;
+                font-size: 14px;
+            }
+
+        }
+
+        /* 各ページごとの追加CSS用 */
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{% url 'home' %}" class="brand">
+        Match Lite
+        <small>β version</small>
+    </a>
+  
+      <div class="header-right">
+    {% if user.is_authenticated %}
+        <div class="menu-button" onclick="toggleMenu()">⋮</div>
+    {% endif %}
+    </div>
+    <!-- <div class="ladies_free-banner">
+  <span class="badge">女性は無料</span>
+  <p>すべての機能をずっと無料で使えます 💗</p>
+  <a href="/ladies_free" class="btn-primary">詳しく見る</a>
+</div> -->
+</header>
+
+<main>
+    {# ここに各ページの中身がそのまま入る（カードで囲みたいページはテンプレ側で <div class="card"> を書く） #}
+    {% block content %}{% endblock %}
+</main>
+
+
+{% block extra_js %}{% endblock %}
+
+{% if request.user.is_authenticated %}
+<div class="bottom-nav-wrapper">
+  <nav class="bottom-nav">
+    <a href="{% url 'profile_list' %}"
+       class="bottom-nav__item {% if current_tab == 'search' %}is-active{% endif %}">
+      <span class="bottom-nav__icon">🔍</span>
+      <span class="bottom-nav__label">さがす</span>
+    </a>
+
+    <a href="{% url 'chat_list' %}"
+       class="bottom-nav__item {% if current_tab == 'chat' %}is-active{% endif %}">
+      <span class="bottom-nav__icon">
+        💬
+        {% if has_new_messages %}
+          <span class="bottom-nav__badge"></span>
+        {% endif %}
+      </span>
+      <span class="bottom-nav__label">メッセージ</span>
+    </a>
+
+    <a href="{% url 'board_list' %}"
+       class="bottom-nav__item {% if current_tab == 'board' %}is-active{% endif %}">
+      <span class="bottom-nav__icon">📋</span>
+      <span class="bottom-nav__label">掲示板</span>
+    </a>
+
+    <a href="{% url 'like_inbox' %}"
+       class="bottom-nav__item {% if current_tab == 'notice' %}is-active{% endif %}">
+      <span class="bottom-nav__icon">
+        🔔
+        {% if has_new_likes or has_new_matches %}
+          <span class="bottom-nav__badge"></span>
+        {% endif %}
+      </span>
+      <span class="bottom-nav__label">通知</span>
+    </a>
+
+    <a href="{% url 'my_profile' %}"
+       class="bottom-nav__item {% if current_tab == 'me' %}is-active{% endif %}">
+      <span class="bottom-nav__icon">😊</span>
+      <span class="bottom-nav__label">マイプロフィール</span>
+    </a>
+  </nav>
+</div>
+{% endif %}
+
+{# 🟢 フッターはログインしてなくても常に表示 #}
+<footer>
+  <small>
+    &copy; {{ now|date:"Y" }} Match Lite (prototype)
+    ・ <a href="{% url 'terms' %}" class="text-link">利用規約</a>
+    ・ <a href="{% url 'privacy' %}" class="text-link">プライバシーポリシー</a>
+    ・ <a href="{% url 'rules' %}" class="text-link">禁止事項</a>
+
+  
+  </small>
+</footer>
+<div id="top-menu" class="top-menu">
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'contact' %}">お問い合わせ</a>
+    {% endif %}
+    <a href="{% url 'terms' %}">利用規約</a>
+    <a href="{% url 'privacy' %}">プライバシーポリシー</a>
+    <a href="{% url 'rules' %}">禁止事項</a>
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}">ログアウト</a>
+    {% endif %}
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'delete_account' %}" class="text-link">退会する</a>
+    {% endif %}
+</div>
+</body>
+<script>
+function toggleMenu() {
+    const menu = document.getElementById("top-menu");
+    menu.style.display = (menu.style.display === "block") ? "none" : "block";
+}
+
+// メニュー以外をクリックしたら閉じる
+document.addEventListener("click", function(e) {
+    const menu = document.getElementById("top-menu");
+    const btn = document.querySelector(".menu-button");
+
+    if (!menu.contains(e.target) && !btn.contains(e.target)) {
+        menu.style.display = "none";
+    }
+});
+</script>
+</html>
