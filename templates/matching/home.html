@@ -9,20 +9,25 @@
             text-align: center;
             padding-top: 80px;
         }
-        .btn {
-            display: inline-block;
-            padding: 12px 22px;
-            background: #ff4f7d;
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            margin: 10px;
-        }
-        .btn.outline {
-            background: white;
-            color: #ff4f7d;
-            border: 2px solid #ff4f7d;
-        }
+      .btn {
+    display: inline-block;
+    padding: 16px 28px;          /* ← 余白を増やしてタップしやすく */
+    font-size: 18px;              /* ← 文字を大きく */
+    width: 80%;                   /* ← スマホだと横幅を広げる */
+    max-width: 300px;             /* ← 大きすぎないように上限 */
+    background: #ff4f7d;
+    color: white;
+    border-radius: 10px;          /* ← 少し丸みを強く */
+    text-decoration: none;
+    margin: 12px auto;            /* ← 中央寄せ */
+    display: block;               /* ← 横幅指定に必須 */
+}
+
+.btn.outline {
+    background: white;
+    color: #ff4f7d;
+    border: 2px solid #ff4f7d;
+}
 
         /* ▼ 規約リンク表示ゾーン */
         .terms-note {
