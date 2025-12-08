@@ -24,6 +24,10 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
 
 
+# ★ ここを追加
+CSRF_TRUSTED_ORIGINS = [
+    "https://matching-app-enlo.onrender.com",
+]
 # Application definition
 
 INSTALLED_APPS = [
