@@ -10,6 +10,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     # ★トップページ（1個だけ）
+    path("debug-users/", matching_views.debug_users, name="debug_users"),
     path("", matching_views.home, name="home"),
 
     path("admin/", admin.site.urls),

@@ -36,6 +36,8 @@ from .utils import (
     detect_file_type,
 )
 from django.contrib.auth import logout
+from django.http import HttpResponse
+from django.contrib.auth.models import User
 
 def custom_404(request, exception):
     return render(request, "matching/404.html", status=404)
@@ -1042,3 +1044,9 @@ def logout_view(request):
     """シンプルなログアウトビュー（GET/POST どちらでもOK）"""
     logout(request)
     return redirect("home")   # 好きな遷移先に変えてOK
+
+def debug_users(request):
+    """一時的：DBに入っているユーザー名を一覧表示するデバッグ用ビュー"""
+    users = User.objects.all().values_list("id", "username")
+    lines = [f"{pk}: {username}" for pk, username in users]
+    return HttpResponse("<br>".join(lines) or "ユーザーがいません")
