@@ -8,6 +8,7 @@ channels==4.3.2
 constantly==23.10.4
 cryptography==46.0.3
 daphne==4.2.1
+dj-database-url==3.0.1
 Django==5.2.8
 hyperlink==21.0.0
 idna==3.11
@@ -15,6 +16,8 @@ Incremental==24.11.0
 msgpack==1.1.2
 packaging==25.0
 pillow==12.0.0
+psycopg==3.3.2
+psycopg-binary==3.3.2
 py-ubjson==0.16.1
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
